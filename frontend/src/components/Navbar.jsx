@@ -30,7 +30,6 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
-          
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <img
@@ -38,8 +37,8 @@ export default function Navbar() {
               alt="SkillSwap Logo"
               className="h-10 w-10 object-contain transition-transform duration-300 hover:scale-105"
             />
-            <span 
-              className="font-extrabold text-xl tracking-wide text-white" 
+            <span
+              className="font-extrabold text-xl tracking-wide text-white"
               style={{ fontFamily: "'Zen Dots', cursive" }}
             >
               SkillSwap
@@ -50,28 +49,36 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
             >
               Home
             </Link>
 
             <Link
               to="/about"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
             >
               About Us
             </Link>
 
             <Link
               to="/explore-skills"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
             >
               Explore Skills
             </Link>
 
             <Link
+              to="/Reviews"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
+            >
+              Reviews
+            </Link>
+
+
+            <Link
               to="/contact"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
             >
               Contact us
             </Link>
@@ -81,7 +88,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <Link
               to="/login"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-gray-100  hover:text-white transition-colors"
             >
               Log In
             </Link>
@@ -97,7 +104,7 @@ export default function Navbar() {
 
           {/* Mobile Button */}
           <button
-            className="md:hidden text-gray-300 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800"
+            className="md:hidden text-gray-100  hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -115,23 +122,50 @@ export default function Navbar() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="md:hidden bg-black border-b border-white/10 px-6 py-6 overflow-hidden"
           >
-            <div className="flex flex-col gap-4 text-sm font-medium text-gray-300">
-              <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-white">
+            <div className="flex flex-col gap-4 text-sm font-medium text-gray-100 ">
+              <Link
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
                 Home
               </Link>
-              <Link to="/about" onClick={() => setMenuOpen(false)} className="hover:text-white">
+              <Link
+                to="/about"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
                 About
               </Link>
-              <Link to="/services" onClick={() => setMenuOpen(false)} className="hover:text-white">
-                Services
+              <Link
+                to="/explore-skills"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Explore Skills
               </Link>
-              <Link to="/contact" onClick={() => setMenuOpen(false)} className="hover:text-white">
+              <Link
+                to="/Reviews"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
+                Reviews
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
                 Contact
               </Link>
 
               <hr className="border-white/10 my-1" />
 
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-white">
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-white"
+              >
                 Log In
               </Link>
 

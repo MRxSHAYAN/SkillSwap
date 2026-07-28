@@ -25,14 +25,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white text-slate-800 font-sans pt-16 sm:pt-24 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden selection:bg-blue-200 selection:text-blue-900">
-      {/* Background Subtle Highlights */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/10 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-700/20 blur-3xl rounded-full pointer-events-none" />
 
-      {/* Main Card Container */}
       <div className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-blue-100">
         
-        {/* LEFT PANEL: Light Hero Section */}
+        {/* Left Side */}
         <div className="lg:col-span-5 bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/40 p-8 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200 text-xs font-semibold tracking-wide text-blue-700">
@@ -77,7 +75,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* RIGHT PANEL: Form Area */}
+        {/* RIGHT Side*/}
         <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-white">
           <div className="mb-6">
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -89,7 +87,6 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Address */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                 Email Address
@@ -108,7 +105,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs font-semibold text-slate-700">
