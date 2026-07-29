@@ -16,6 +16,16 @@ import Register from "./pages/Auth/Register";
 
 // Dashboard Pages
 import DashboardHome from "./dashboard/DashboardHome";
+import ViewAllNotifications from "./dashboard/pages/ViewAllNotifications";
+import PublicProfile from "./dashboard/pages/PublicProfile";
+import ProfileSettings from "./dashboard/pages/ProfileSettings";
+import Settings from "./dashboard/pages/Settings";
+import DashboardExploreSkills from "./dashboard/pages/DashboardExploreSkills";
+import Sessions from "./dashboard/pages/Sessions";
+import MySwaps from "./dashboard/pages/MySwaps";
+import Matches from "./dashboard/pages/Matches";
+import Messages from "./dashboard/pages/Messages";
+import Credits from "./dashboard/pages/Credits";
 
 export default function App() {
   return (
@@ -34,6 +44,22 @@ export default function App() {
       {/* Dashboard Page*/}
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardHome />} />
+        <Route
+          path="/dashboard/notifications"
+          element={<ViewAllNotifications />}
+        />
+        <Route path="/dashboard/profile" element={<PublicProfile />} />
+        <Route
+          path="/dashboard/profile-settings"
+          element={<ProfileSettings />}
+        />
+        <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path="/dashboard/explore" element={<DashboardExploreSkills />} />
+        <Route path="/dashboard/sessions" element={<Sessions />} />
+        <Route path="/dashboard/swaps" element={<MySwaps />} />
+        <Route path="/dashboard/matches" element={<Matches />} />
+        <Route path="/dashboard/messages" element={<Messages />} />
+        <Route path="/dashboard/credits" element={<Credits />} />
       </Route>
     </Routes>
   );

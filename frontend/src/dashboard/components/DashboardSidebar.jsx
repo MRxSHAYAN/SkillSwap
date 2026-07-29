@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
+  Compass, // Added for Explore Skills
+  Calendar, // Added for Sessions & Calendar
   BookOpen,
   Users,
   MessageSquare,
+  Zap, // Added for Credits & Rewards
+  Bell,
+  User,
   Settings,
   LogOut,
   X,
-  Menu,
   GraduationCap,
 } from "lucide-react";
 
@@ -18,12 +22,17 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
   // Navigation Links for Dashboard
   const mainNavItems = [
     { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Explore Skills", path: "/dashboard/explore", icon: Compass },
+    { name: "Sessions", path: "/dashboard/sessions", icon: Calendar },
     { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
     { name: "Matches", path: "/dashboard/matches", icon: Users },
     { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
+    { name: "Credits & Rewards", path: "/dashboard/credits", icon: Zap },
   ];
 
   const bottomNavItems = [
+    { name: "My Profile", path: "/dashboard/profile", icon: User },
+    { name: "Notifications", path: "/dashboard/notifications", icon: Bell },
     { name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
 
@@ -46,7 +55,7 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
         }`}
       >
         {/* TOP SECTION: Logo & Main Nav */}
-        <div className="p-5 flex flex-col gap-6">
+        <div className="p-5 flex flex-col gap-6 overflow-y-auto no-scrollbar">
           {/* Brand Header */}
           <div className="flex items-center justify-between">
             <Link to="/dashboard" className="flex items-center gap-2.5">
@@ -68,7 +77,7 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
           </div>
 
           {/* Main Navigation Links */}
-          <nav className="space-y-1.5">
+          <nav className="space-y-1">
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
               Menu
             </p>
@@ -80,7 +89,8 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                     active
                       ? "bg-blue-50 text-blue-600 font-bold"
                       : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
@@ -98,12 +108,12 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
         </div>
 
         {/* BOTTOM SECTION: Settings & Logout */}
-        <div className="p-5 border-t border-slate-100 space-y-1.5">
+        <div className="p-5 border-t border-slate-100 space-y-1">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
             Preferences
           </p>
 
-          {/* Settings Link */}
+          {/* Preferences Links */}
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -112,7 +122,8 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   active
                     ? "bg-blue-50 text-blue-600 font-bold"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
@@ -130,9 +141,9 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
           {/* Logout Button */}
           <button
             onClick={() => console.log("User logged out")}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
           >
-            <LogOut size={18} className="text-red-500" />
+            <LogOut size={18} className="text-rose-500" />
             <span>Logout</span>
           </button>
         </div>
