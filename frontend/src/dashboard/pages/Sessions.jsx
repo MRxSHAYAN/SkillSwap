@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -133,15 +134,15 @@ export default function Sessions() {
 
             <div className="flex items-center gap-2">
               {session.meetLink && (
-                <a
-                  href={session.meetLink}
+                <Link
+                  to="/dashboard/room"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer"
                 >
                   <Video size={14} />
                   <span>Enter Room</span>
-                </a>
+                </Link>
               )}
               {session.status === "pending" && (
                 <span className="text-xs text-slate-400 italic">Awaiting acceptance</span>

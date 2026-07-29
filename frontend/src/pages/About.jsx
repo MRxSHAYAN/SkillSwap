@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Target,
@@ -39,7 +40,6 @@ export default function AboutUs() {
 
   return (
     <div className="bg-white text-zinc-900 min-h-screen">
-      
       {/* HEADER / HERO  */}
       <section className="pt-28 pb-16 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center space-y-4">
@@ -72,7 +72,6 @@ export default function AboutUs() {
             className="bg-zinc-950 border border-zinc-800 rounded-[2.5rem] p-8 sm:p-12 lg:p-16 shadow-2xl"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
               <div className="lg:col-span-7 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono uppercase tracking-wider">
                   <GraduationCap size={14} />
@@ -84,19 +83,23 @@ export default function AboutUs() {
                 </h2>
 
                 <p className="text-zinc-400 text-base sm:text-lg leading-relaxed">
-                  Whether you're a developer needing UI design, or a video editor
-                  wanting to master AI prompts, SkillSwap gives you a direct 1-on-1
-                  partner to swap skills without spending a single dollar.
+                  Whether you're a developer needing UI design, or a video
+                  editor wanting to master AI prompts, SkillSwap gives you a
+                  direct 1-on-1 partner to swap skills without spending a single
+                  dollar.
                 </p>
 
                 <div className="pt-2">
-                  <button className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-zinc-950 hover:bg-zinc-200 font-bold text-sm transition-all duration-200 group">
+                  <Link
+                    to="/explore-skills"
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-zinc-950 hover:bg-zinc-200 font-bold text-sm transition-all duration-200 group"
+                  >
                     <span>Explore Skill Matching</span>
                     <ArrowRight
                       size={16}
                       className="group-hover:translate-x-1 transition-transform"
                     />
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -119,7 +122,6 @@ export default function AboutUs() {
                   </motion.div>
                 ))}
               </div>
-
             </div>
           </motion.div>
         </div>
@@ -164,7 +166,6 @@ export default function AboutUs() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

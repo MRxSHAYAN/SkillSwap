@@ -153,7 +153,9 @@ export default function Home() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-mono text-purple-300">
                 <GraduationCap size={14} className="text-blue-600" />
-                <span className="text-blue-400">Peer-to-Peer Skill Exchange</span>
+                <span className="text-blue-400">
+                  Peer-to-Peer Skill Exchange
+                </span>
               </div>
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] sm:leading-[1.1]">
                 Trade Your Skills. <br />
@@ -215,6 +217,7 @@ export default function Home() {
             </motion.div>
 
             {/* Right Side Spline */}
+            {/* Right Side 3D Canvas Embed */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -222,23 +225,32 @@ export default function Home() {
               className="lg:col-span-5 relative h-[320px] sm:h-[450px] lg:h-[520px] w-full flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm shadow-2xl overflow-hidden"
             >
               {!is3DLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs font-mono bg-black/40">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs font-mono bg-black/40 z-20 pointer-events-none">
                   <Loader2 size={24} className="animate-spin text-blue-600" />
-                  <span>Loading 3D Canvas...</span>
+                  <span>Loading 3D Scene...</span>
                 </div>
               )}
 
-              <spline-viewer
-                url="https://my.spline.design/3dprojectionnoiseyachting-7NyMxZ4k503h3DJ3skqbkXrr-C2o/"
+              {/* Clean iframe Embed for Public Spline Links */}
+              <iframe
+                src="https://my.spline.design/3dprojectionnoiseyachting-7NyMxZ4k503h3DJ3skqbkXrr-C2o/"
                 onLoad={() => setIs3DLoaded(true)}
-              ></spline-viewer>
+                title="3D SkillSwap Scene"
+                className="w-full h-full border-0 pointer-events-auto"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
+                  overflow: "hidden",
+                }}
+              />
 
-              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none">
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none z-10">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  3D Interactive
+                  Let Grow With Your Skills
                 </span>
-                <span>[ Drag to Rotate ]</span>
+                <span>[ SkillSwap ]</span>
               </div>
             </motion.div>
           </div>
@@ -343,7 +355,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Explore Domains Section */} 
+      {/* Explore Domains Section */}
       <section className="bg-black text-white py-24 px-6 border-b border-zinc-800">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -356,53 +368,58 @@ export default function Home() {
               </h2>
             </div>
 
-            <button className="self-start md:self-auto inline-flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-white transition-colors bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-full">
+            <Link
+              to="/explore-skills"
+              className="self-start md:self-auto inline-flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-white transition-colors bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-full"
+            >
               <span>View All Skills</span>
               <ArrowUpRight size={14} />
-            </button>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((cat, index) => {
-              const Icon = cat.icon;
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.08 }}
-                  className="group relative bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl hover:border-zinc-700 hover:bg-zinc-900/50 transition-all duration-200 cursor-pointer flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-blue-500 flex items-center justify-center group-hover:border-blue-500/30 group-hover:bg-blue-500/10 transition-colors">
-                        <Icon size={20} />
+          <Link to="/explore-skills">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((cat, index) => {
+                const Icon = cat.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.08 }}
+                    className="group relative bg-zinc-950 border border-zinc-800/80 p-6 rounded-2xl hover:border-zinc-700 hover:bg-zinc-900/50 transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-blue-500 flex items-center justify-center group-hover:border-blue-500/30 group-hover:bg-blue-500/10 transition-colors">
+                          <Icon size={20} />
+                        </div>
+                        <ArrowUpRight
+                          size={16}
+                          className="text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
+                        />
                       </div>
-                      <ArrowUpRight
-                        size={16}
-                        className="text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
-                      />
+
+                      <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">
+                        {cat.title}
+                      </h3>
+                      <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+                        {cat.description}
+                      </p>
                     </div>
 
-                    <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">
-                      {cat.title}
-                    </h3>
-                    <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
-                      {cat.description}
-                    </p>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-zinc-900/80 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-                    <span>Available Peers</span>
-                    <span className="text-zinc-300 font-semibold">
-                      {cat.count}
-                    </span>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                    <div className="mt-6 pt-4 border-t border-zinc-900/80 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                      <span>Available Peers</span>
+                      <span className="text-zinc-300 font-semibold">
+                        {cat.count}
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </Link>
         </div>
       </section>
 

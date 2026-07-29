@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   BookOpen,
   Users,
@@ -129,14 +130,18 @@ export default function DashboardHome() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
-            <button className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-lg shadow-blue-600/30 cursor-pointer">
-              <Plus size={16} />
-              <span>Create Swap Offer</span>
-            </button>
-            <button className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/15 rounded-xl text-xs sm:text-sm font-semibold backdrop-blur-md transition-all cursor-pointer">
-              <Search size={16} />
-              <span>Find Mentors</span>
-            </button>
+            <Link to="/dashboard/new-swap">
+              <button className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-lg shadow-blue-600/30 cursor-pointer">
+                <Plus size={16} />
+                <span>Create Swap Offer</span>
+              </button>
+            </Link>
+            <Link to="/dashboard/explore">
+              <button className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/15 rounded-xl text-xs sm:text-sm font-semibold backdrop-blur-md transition-all cursor-pointer">
+                <Search size={16} />
+                <span>Find Mentors</span>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -190,10 +195,10 @@ export default function DashboardHome() {
               <p className="text-xs text-slate-500 mt-0.5">Your confirmed and upcoming 1-on-1 sessions</p>
             </div>
             
-            <button className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">
+            <Link to="/dashboard/sessions" className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">
               <span>View Schedule</span>
               <ChevronRight size={14} />
-            </button>
+            </Link>
           </div>
 
           <div className="space-y-4">
@@ -248,13 +253,13 @@ export default function DashboardHome() {
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-2 pt-1">
-                  <button className="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer">
+                  <Link to="/dashboard/messages" className="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer">
                     <MessageSquare size={14} />
                     <span>Chat Partner</span>
-                  </button>
-                  <button className="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition-all cursor-pointer">
+                  </Link>
+                  <Link to="/dashboard/room" className="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition-all cursor-pointer">
                     Enter Room
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

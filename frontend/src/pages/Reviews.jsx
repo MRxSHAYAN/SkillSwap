@@ -114,7 +114,7 @@ export default function ReviewsPage() {
       <div className="max-w-6xl mx-auto space-y-10">
         
         {/* RATING SUMMARY */}
-        <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-sm text-center relative overflow-hidden">
+        <div className=" rounded-3xl text-center ">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200 text-xs font-semibold tracking-wide text-blue-700 mb-4">
             <Sparkles size={14} className="text-blue-600" />
             CLIENT TRUST & TESTIMONIALS

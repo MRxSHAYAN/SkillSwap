@@ -14,6 +14,7 @@ import Reviews from "./pages/Reviews";
 import Contact from "./pages/Contact";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
 
 // Dashboard Pages
 import DashboardHome from "./dashboard/DashboardHome";
@@ -24,11 +25,13 @@ import Settings from "./dashboard/pages/Settings";
 import NewSwap from "./dashboard/pages/NewSwap";
 import DashboardExploreSkills from "./dashboard/pages/DashboardExploreSkills";
 import Sessions from "./dashboard/pages/Sessions";
+import LiveRoom from "./dashboard/pages/LiveRoom";
 import MySwaps from "./dashboard/pages/MySwaps";
 import Matches from "./dashboard/pages/Matches";
 import Messages from "./dashboard/pages/Messages";
 import Credits from "./dashboard/pages/Credits";
 import SSPLeaderboard from "./dashboard/pages/SSPLeaderboard";
+import SwapDetails from "./dashboard/pages/SwapDetails";
 
 export default function App() {
   return (
@@ -45,6 +48,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* Dashboard Pages */}
@@ -57,11 +61,13 @@ export default function App() {
           <Route path="new-swap" element={<NewSwap />} />
           <Route path="explore" element={<DashboardExploreSkills />} />
           <Route path="sessions" element={<Sessions />} />
+          <Route path="room" element={<LiveRoom />} />
           <Route path="swaps" element={<MySwaps />} />
           <Route path="matches" element={<Matches />} />
           <Route path="messages" element={<Messages />} />
           <Route path="credits" element={<Credits />} />
           <Route path="leaderboard" element={<SSPLeaderboard />} />
+          <Route path="swap-details" element={<SwapDetails />} />
         </Route>
       </Routes>
     </>
