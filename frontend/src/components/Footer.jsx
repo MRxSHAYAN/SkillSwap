@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { ArrowUpRight, Heart } from "lucide-react";
 import { FaGithub, FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -62,7 +63,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/explore-skills"
-                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer "
                 >
                   <span>Explore Skills</span>
                   <ArrowUpRight
@@ -72,24 +73,24 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
+                <HashLink
                   smooth
                   to="/#how-it-works"
-                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer"
                 >
                   <span>How It Works</span>
                   <ArrowUpRight
                     size={14}
                     className="opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all"
                   />
-                </Link>
+                </HashLink>
               </li>
               <li>
                 <Link
-                  to="/community"
-                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                  to="/reviews"
+                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer"
                 >
-                  <span>Community</span>
+                  <span>Reviews</span>
                   <ArrowUpRight
                     size={14}
                     className="opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all"
@@ -98,8 +99,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/leaderboard"
-                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                  to="/dashboard/leaderboard"
+                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer"
                 >
                   <span>Leaderboard</span>
                   <ArrowUpRight

@@ -2,6 +2,7 @@ import Spline from "@splinetool/react-spline";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { motion } from "framer-motion";
 import {
   Mail,

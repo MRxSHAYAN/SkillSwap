@@ -8,19 +8,23 @@ export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900 font-sans">
-      {/* Sidebar */}
+    /* Changed min-h-screen to h-screen overflow-hidden to lock outer viewport */
+    <div className="h-screen flex overflow-hidden bg-slate-50 text-slate-900 font-sans">
+      {/* Sidebar - Stays fixed on the left */}
       <DashboardSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      {/* Main Content Column */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        
+        {/* Navbar - Stays fixed at top */}
         <DashboardNavbar setIsSidebarOpen={setIsSidebarOpen} />
-        {/* Optional top bar */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+
+        {/* Scrollable Main Area - ONLY this section will scroll */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
 
-        {/* Optional bottom bar */}
+        {/* Footer - Stays fixed at bottom */}
         <Footer />
       </div>
     </div>

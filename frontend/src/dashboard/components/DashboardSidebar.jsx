@@ -2,12 +2,14 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  Compass, // Added for Explore Skills
-  Calendar, // Added for Sessions & Calendar
+  Compass, 
+  PlusCircle,
+  Calendar, 
   BookOpen,
   Users,
   MessageSquare,
-  Zap, // Added for Credits & Rewards
+  Zap, 
+  Trophy,
   Bell,
   User,
   Settings,
@@ -20,15 +22,17 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
 
   // Navigation Links for Dashboard
-  const mainNavItems = [
-    { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Explore Skills", path: "/dashboard/explore", icon: Compass },
-    { name: "Sessions", path: "/dashboard/sessions", icon: Calendar },
-    { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
-    { name: "Matches", path: "/dashboard/matches", icon: Users },
-    { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
-    { name: "Credits & Rewards", path: "/dashboard/credits", icon: Zap },
-  ];
+ const mainNavItems = [
+  { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
+  { name: "New Swap", path: "/dashboard/new-swap", icon: PlusCircle },
+  { name: "Explore Skills", path: "/dashboard/explore", icon: Compass },
+  { name: "Sessions", path: "/dashboard/sessions", icon: Calendar },
+  { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
+  { name: "Matches", path: "/dashboard/matches", icon: Users },
+  { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
+  { name: "Credits & Rewards", path: "/dashboard/credits", icon: Zap },
+  { name: "Leaderboard", path: "/dashboard/leaderboard", icon: Trophy },
+];
 
   const bottomNavItems = [
     { name: "My Profile", path: "/dashboard/profile", icon: User },
