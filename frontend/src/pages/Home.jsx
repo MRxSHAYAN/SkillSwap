@@ -231,7 +231,7 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Clean iframe Embed for Public Spline Links */}
+              {/* Spline */}
               <iframe
                 src="https://my.spline.design/3dprojectionnoiseyachting-7NyMxZ4k503h3DJ3skqbkXrr-C2o/"
                 onLoad={() => setIs3DLoaded(true)}
