@@ -30,7 +30,7 @@ import MySwaps from "./dashboard/pages/MySwaps";
 import Matches from "./dashboard/pages/Matches";
 import Messages from "./dashboard/pages/Messages";
 import Credits from "./dashboard/pages/Credits";
-import SSPLeaderboard from "./dashboard/pages/SSPLeaderboard";
+import SSPleaderboard from "./dashboard/pages/SSPleaderboard";
 import SwapDetails from "./dashboard/pages/SwapDetails";
 
 export default function App() {
@@ -66,7 +66,7 @@ export default function App() {
           <Route path="matches" element={<Matches />} />
           <Route path="messages" element={<Messages />} />
           <Route path="credits" element={<Credits />} />
-          <Route path="leaderboard" element={<SSPLeaderboard />} />
+          <Route path="leaderboard" element={<SSPleaderboard />} />
           <Route path="swap-details" element={<SwapDetails />} />
         </Route>
       </Routes>

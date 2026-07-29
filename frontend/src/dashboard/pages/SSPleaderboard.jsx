@@ -6,7 +6,7 @@ import {
   Search,
 } from "lucide-react";
 
-export default function SSPLeaderboard() {
+export default function SSPleaderboard() {
   const [timeframe, setTimeframe] = useState("weekly");
   const [searchTerm, setSearchTerm] = useState("");
 
