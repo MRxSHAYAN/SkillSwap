@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, MessageSquare, Send, CheckCircle2 } from "lucide-react";
+import { User, Mail, MessageSquare, Send, CheckCircle2, Sparkles } from "lucide-react";
 import contactGif from "../assets/Contact-illustration.gif";
 
 export default function ContactSection() {
@@ -19,11 +19,16 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="bg-white text-zinc-900 py-20 pt-32 pb-20 px-6 px-6 border-b border-zinc-200 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-sky-50/60 rounded-[2.5rem] border border-sky-100 p-8 sm:p-12 lg:p-16 shadow-xl shadow-sky-500/5 relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-            {/* LEFT SIDE */}
+    <section className="bg-white text-zinc-900 py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden border-t border-zinc-100">
+      {/* Light Gradient Accents */}
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-blue-50/80 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-sky-100/50 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="bg-white rounded-3xl sm:rounded-[2.5rem] border border-zinc-200/80 p-6 sm:p-12 lg:p-16 shadow-xl shadow-zinc-200/50 relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            {/* LEFT SIDE: FORM */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -32,11 +37,15 @@ export default function ContactSection() {
               className="lg:col-span-6 space-y-6"
             >
               <div>
-                <h2 className="text-4xl sm:text-5xl font-black text-[#0f2d4a] tracking-tight">
-                  Contact us
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-100 bg-blue-50/80 text-xs font-semibold text-blue-600 mb-4">
+                  <Sparkles size={13} className="text-blue-600" />
+                  <span>Get In Touch</span>
+                </div>
+                <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-zinc-950 leading-tight">
+                  Contact <span className="text-blue-600">Us</span>
                 </h2>
-                <p className="text-zinc-500 text-sm mt-2">
-                  Have questions about skill trading? Drop us a line below!
+                <p className="text-zinc-500 text-xs sm:text-sm mt-2 leading-relaxed">
+                  Have questions about skill trading or need help matching? Drop us a message!
                 </p>
               </div>
 
@@ -44,81 +53,85 @@ export default function ContactSection() {
                 <motion.div
                   initial={{ scale: 0.95, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="bg-white p-6 rounded-3xl border border-emerald-200 text-emerald-700 flex items-center gap-4 shadow-sm"
+                  className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-emerald-800 flex items-center gap-4 shadow-sm"
                 >
                   <CheckCircle2
                     size={28}
-                    className="text-emerald-500 shrink-0"
+                    className="text-emerald-600 shrink-0"
                   />
                   <div>
-                    <h4 className="font-bold text-base text-zinc-900">
+                    <h4 className="font-bold text-sm sm:text-base text-zinc-900">
                       Message Sent!
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      We'll get back to you shortly.
+                    <p className="text-xs text-zinc-600 mt-0.5">
+                      We've received your message and will get back to you shortly.
                     </p>
                   </div>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Name Input */}
                   <div className="relative">
                     <User
                       size={18}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-600"
+                      className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                     />
                     <input
                       type="text"
                       required
-                      placeholder="Name"
+                      placeholder="Your Name"
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      className="w-full pl-12 pr-6 py-4 rounded-full bg-white border border-blue-100 text-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all placeholder:text-blue-300 shadow-sm"
+                      className="w-full pl-11 sm:pl-12 pr-4 sm:pr-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-50/80 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 text-xs sm:text-sm focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm"
                     />
                   </div>
 
+                  {/* Email Input */}
                   <div className="relative">
                     <Mail
                       size={18}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-600"
+                      className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                     />
                     <input
                       type="email"
                       required
-                      placeholder="Email"
+                      placeholder="Your Email"
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="w-full pl-12 pr-6 py-4 rounded-full bg-white border border-blue-100 text-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all placeholder:text-blue-300 shadow-sm"
+                      className="w-full pl-11 sm:pl-12 pr-4 sm:pr-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-50/80 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 text-xs sm:text-sm focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm"
                     />
                   </div>
 
+                  {/* Message Textarea */}
                   <div className="relative">
                     <MessageSquare
                       size={18}
-                      className="absolute left-5 top-5 text-blue-600"
+                      className="absolute left-4 sm:left-5 top-4 text-zinc-400"
                     />
                     <textarea
                       required
                       rows={4}
-                      placeholder="Message"
+                      placeholder="How can we help you?"
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      className="w-full pl-12 pr-6 py-4 rounded-3xl bg-white border border-blue-100 text-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all placeholder:text-blue-300 shadow-sm resize-none"
+                      className="w-full pl-11 sm:pl-12 pr-4 sm:pr-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-50/80 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 text-xs sm:text-sm focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm resize-none"
                     />
                   </div>
 
+                  {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full py-4 rounded-full bg-blue-500 hover:bg-blue-600 text-white font-bold text-base transition-all duration-300 shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 group active:scale-98"
+                    className="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 group active:scale-[0.99]"
                   >
                     <span>Send Message</span>
                     <Send
-                      size={18}
+                      size={16}
                       className="group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform"
                     />
                   </button>
@@ -126,18 +139,15 @@ export default function ContactSection() {
               )}
             </motion.div>
 
-            {/* RIGHT SIDE */}
+            {/* RIGHT SIDE: ILLUSTRATION */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="lg:col-span-6 flex items-center justify-center relative min-h-[300px]"
+              className="lg:col-span-6 flex items-center justify-center relative min-h-[260px] sm:min-h-[320px]"
             >
-              <div className="absolute -top-12 -right-12 w-64 h-64 bg-amber-200/40 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-sky-200/50 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="relative z-10 w-full max-w-md flex items-center justify-center">
+              <div className="relative z-10 w-full max-w-sm sm:max-w-md flex items-center justify-center p-2">
                 <img
                   src={contactGif}
                   alt="Contact Illustration"
@@ -145,6 +155,7 @@ export default function ContactSection() {
                 />
               </div>
             </motion.div>
+
           </div>
         </div>
       </div>

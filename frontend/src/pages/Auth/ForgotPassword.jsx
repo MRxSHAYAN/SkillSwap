@@ -89,7 +89,7 @@ export default function ForgotPassword() {
           </div>
         )}
 
-        {/* STEP 1: EMAIL & OTP */}
+        {/* Step 1 */}
         {step === 1 && (
           <>
             <div className="text-center space-y-1">
@@ -102,7 +102,6 @@ export default function ForgotPassword() {
             </div>
 
             <form onSubmit={handleVerifyOtp} className="space-y-4">
-              {/* Email Input with Integrated "Send OTP" Button */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Email Address
@@ -130,8 +129,7 @@ export default function ForgotPassword() {
                   </button>
                 </div>
               </div>
-
-              {/* OTP Input Field */}
+    
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Enter 6-Digit OTP
@@ -168,7 +166,7 @@ export default function ForgotPassword() {
           </>
         )}
 
-        {/* STEP 2: NEW & CONFIRM PASSWORD */}
+        {/* Step 2*/}
         {step === 2 && (
           <>
             <div className="text-center space-y-1">
@@ -181,7 +179,7 @@ export default function ForgotPassword() {
             </div>
 
             <form onSubmit={handleResetPassword} className="space-y-4">
-              {/* New Password */}
+
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   New Password
@@ -202,7 +200,6 @@ export default function ForgotPassword() {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                   Confirm New Password
@@ -238,7 +235,7 @@ export default function ForgotPassword() {
           </>
         )}
 
-        {/* STEP 3: SUCCESS */}
+        {/* Step 3*/}
         {step === 3 && (
           <div className="text-center space-y-4">
             <h2 className="text-lg font-bold text-slate-900">Password Changed!</h2>

@@ -1,8 +1,5 @@
-import Spline from "@splinetool/react-spline";
 import React, { useState } from "react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -29,7 +26,7 @@ import {
 export default function Home() {
   const [is3DLoaded, setIs3DLoaded] = useState(false);
 
-  //  stats of the platform
+  // stats of the platform
   const stats = [
     {
       icon: Users,
@@ -181,14 +178,14 @@ export default function Home() {
                 </Link>
 
                 <Link
-                  to="/explore"
+                  to="/explore-skills"
                   className="w-full sm:w-auto px-7 py-3.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-colors duration-300 backdrop-blur-sm text-center"
                 >
                   Browse Skills
                 </Link>
               </div>
 
-              <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4 max-w-md mx-auto lg:mx-0">
+              <div className="pt-6 border-white/10 grid grid-cols-3 gap-2 sm:gap-4 max-w-md mx-auto lg:mx-0">
                 <div>
                   <p className="text-xl sm:text-2xl font-bold text-white">
                     100%
@@ -216,8 +213,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right Side Spline */}
-            {/* Right Side 3D Canvas Embed */}
+            {/* Right Side 3D Canvas */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -231,24 +227,25 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Spline */}
+              {/* Spline iframe */}
               <iframe
                 src="https://my.spline.design/vectorshapecopycopy-bPC0H6NG0qYVBvTUFlPDhoU8-9bJ/"
                 onLoad={() => setIs3DLoaded(true)}
                 title="3D SkillSwap Scene"
-                className="w-full h-full border-0 pointer-events-auto"
+                className="w-full h-full border-0 pointer-events-none"
                 style={{
                   width: "100%",
                   height: "100%",
                   border: "none",
                   overflow: "hidden",
-                 }}
+                }}
               />
 
+              {/* Static badge overlay for hide Spline watermark */}
               <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none z-10">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Let Grow With Your Skills
+                  Grow With Your Skills
                 </span>
                 <span>[ SkillSwap ]</span>
               </div>
@@ -257,7 +254,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/*Stats section */}
+      {/* Stats section */}
       <section className="bg-white text-zinc-900 py-20 px-6 border-b border-zinc-200">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl mb-12">
