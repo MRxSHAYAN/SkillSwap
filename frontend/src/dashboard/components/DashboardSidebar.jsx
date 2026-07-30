@@ -28,7 +28,6 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
   { name: "New Swap", path: "/dashboard/new-swap", icon: PlusCircle },
   { name: "Explore Skills", path: "/dashboard/explore", icon: Compass },
   { name: "Sessions", path: "/dashboard/sessions", icon: Calendar },
-  { name: "Room", path: "/dashboard/room", icon: Video },
   { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
   { name: "Matches", path: "/dashboard/matches", icon: Users },
   { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },

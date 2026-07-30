@@ -76,16 +76,16 @@ export default function PublicProfile() {
 
             <div className="flex items-center gap-3">
               <Link
-                to="/settings"
+                to="/dashboard/settings"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors"
               >
                 <Edit3 size={15} />
                 <span>Edit Profile</span>
               </Link>
-              <button className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-blue-500/20">
+              <Link to="/dashboard/new-swap" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm shadow-blue-500/20">
                 <MessageSquare size={15} />
                 <span>Request Swap</span>
-              </button>
+              </Link>
             </div>
           </div>
 
