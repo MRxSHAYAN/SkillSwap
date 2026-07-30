@@ -233,7 +233,7 @@ export default function Home() {
 
               {/* Spline */}
               <iframe
-                src="https://my.spline.design/3dprojectionnoiseyachting-7NyMxZ4k503h3DJ3skqbkXrr-C2o/"
+                src="https://my.spline.design/vectorshapecopycopy-bPC0H6NG0qYVBvTUFlPDhoU8-9bJ/"
                 onLoad={() => setIs3DLoaded(true)}
                 title="3D SkillSwap Scene"
                 className="w-full h-full border-0 pointer-events-auto"
@@ -242,7 +242,7 @@ export default function Home() {
                   height: "100%",
                   border: "none",
                   overflow: "hidden",
-                }}
+                 }}
               />
 
               <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none z-10">
