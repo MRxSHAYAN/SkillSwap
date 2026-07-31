@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Compass, 
@@ -21,6 +21,13 @@ import {
 
 export default function DashboardSidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
 
   // Navigation Links for Dashboard
  const mainNavItems = [
@@ -145,7 +152,7 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
 
           {/* Logout Button */}
           <button
-            onClick={() => console.log("User logged out")}
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
           >
             <LogOut size={18} className="text-rose-500" />

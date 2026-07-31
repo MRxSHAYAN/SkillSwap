@@ -99,6 +99,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  to="/contact"
+                  className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer"
+                >
+                  <span>Contact Us</span>
+                  <ArrowUpRight
+                    size={14}
+                    className="opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all"
+                  />
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/dashboard/leaderboard"
                   className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-1 group cursor-pointer"
                 >
@@ -109,6 +121,7 @@ export default function Footer() {
                   />
                 </Link>
               </li>
+
             </ul>
           </div>
 

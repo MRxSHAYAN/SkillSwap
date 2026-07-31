@@ -1,18 +1,35 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Menu,
   Bell,
   Search,
   Check,
+  LogOut,
+  User,
+  Settings,
 } from "lucide-react";
 
 export default function DashboardNavbar({ setIsSidebarOpen }) {
+  const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // User details
-  const userAvatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
-  const userName = "Andrew Sofia";
+  // Pull real user data from localStorage
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const userName = storedUser.fullName || "User";
+  const userInitials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
+  };
 
   const [notifications, setNotifications] = useState([
     {
@@ -39,11 +56,15 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
   ]);
 
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
         setIsNotificationsOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -163,29 +184,54 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
 
         <div className="h-6 w-px bg-slate-200 mx-1" />
 
-        <Link
-          to="/dashboard/profile"
-          className="flex items-center gap-3 pl-1 hover:opacity-80 transition-opacity cursor-pointer focus:outline-none"
-        >
-          <div className="w-9 h-9 rounded-full bg-blue-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-blue-700 font-bold text-xs">
-            {userAvatarUrl ? (
-              <img
-                src={userAvatarUrl}
-                alt={userName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              "AS"
-            )}
-          </div>
+        {/* Avatar + Dropdown */}
+        <div className="relative" ref={profileRef}>
+          <button
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center gap-3 pl-1 hover:opacity-80 transition-opacity cursor-pointer focus:outline-none"
+          >
+            <div className="w-9 h-9 rounded-full bg-blue-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-blue-700 font-bold text-xs">
+              {userInitials}
+            </div>
+            <div className="hidden md:block text-left">
+              <h5 className="text-xs font-bold text-slate-900 leading-none">
+                {userName}
+              </h5>
+              <span className="text-[10px] text-slate-500">
+                {storedUser.skillsTeach?.[0] || "Member"}
+              </span>
+            </div>
+          </button>
 
-          <div className="hidden md:block text-left">
-            <h5 className="text-xs font-bold text-slate-900 leading-none">
-              {userName}
-            </h5>
-            <span className="text-[10px] text-slate-500">Web Developer</span>
-          </div>
-        </Link>
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50">
+              <Link
+                to="/dashboard/profile"
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <User size={15} className="text-slate-400" />
+                My Profile
+              </Link>
+              <Link
+                to="/dashboard/settings"
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <Settings size={15} className="text-slate-400" />
+                Settings
+              </Link>
+              <div className="my-1.5 border-t border-slate-100" />
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              >
+                <LogOut size={15} className="text-rose-500" />
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

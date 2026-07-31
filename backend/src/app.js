@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 const app = express();
 
@@ -27,6 +30,17 @@ app.get('/api/health', (req, res) => {
 
 // auth routes (login & register)
 app.use('/api/auth', authRoutes);
+
+// review routes
+app.use('/api/reviews', reviewRoutes);
+
+// newsletter routes
+app.use('/api/newsletter', newsletterRoutes);
+
+// contact routes
+app.use('/api/contact', contactRoutes);
+
+
 
 // handle 404 for unknown routes
 app.use((req, res) => {

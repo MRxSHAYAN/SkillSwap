@@ -74,8 +74,62 @@ const loginValidation = [
   handleValidationErrors,
 ];
 
+// Validation rules for creating a review
+const createReviewValidation = [
+  body('revieweeName')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Name cannot exceed 100 characters'),
+
+  body('skill')
+    .trim()
+    .notEmpty()
+    .withMessage('Skill name is required'),
+
+  body('rating')
+    .notEmpty()
+    .withMessage('Rating is required')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Rating must be an integer between 1 and 5'),
+
+  body('comment')
+    .trim()
+    .notEmpty()
+    .withMessage('Review comment is required')
+    .isLength({ min: 5, max: 1000 })
+    .withMessage('Comment must be between 5 and 1000 characters'),
+
+  handleValidationErrors,
+];
+
+// Validation rules for updating a review
+const updateReviewValidation = [
+  body('rating')
+    .optional()
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Rating must be an integer between 1 and 5'),
+
+  body('comment')
+    .optional()
+    .trim()
+    .isLength({ min: 5, max: 1000 })
+    .withMessage('Comment must be between 5 and 1000 characters'),
+
+  body('skill')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Skill name cannot be empty'),
+
+  handleValidationErrors,
+];
+
 module.exports = {
   registerValidation,
   loginValidation,
+  createReviewValidation,
+  updateReviewValidation,
   handleValidationErrors,
 };
+

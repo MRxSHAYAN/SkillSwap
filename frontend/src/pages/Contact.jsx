@@ -9,14 +9,42 @@ export default function ContactSection() {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
     if (formData.name && formData.email && formData.message) {
-      setSubmitted(true);
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || "Failed to send message.");
+          return;
+        }
+
+        setSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
+      } catch (err) {
+        console.error("Contact form API error:", err);
+        setError("Unable to connect to backend server. Make sure your backend server is running on port 3000.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
+
 
   return (
     <section className="bg-white text-zinc-900 py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden border-t border-zinc-100">
@@ -70,6 +98,12 @@ export default function ContactSection() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {error && (
+                    <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
+                      {error}
+                    </div>
+                  )}
+
                   {/* Name Input */}
                   <div className="relative">
                     <User
