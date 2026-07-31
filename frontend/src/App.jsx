@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Layouts
 import PublicLayout from "./layouts/PublicLayout";
@@ -51,7 +52,8 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
-        {/* Dashboard Pages */}
+        {/* Dashboard Pages — Protected */}
+        <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardHome />} />
           <Route path="notifications" element={<ViewAllNotifications />} />
@@ -68,6 +70,7 @@ export default function App() {
           <Route path="credits" element={<Credits />} />
           <Route path="leaderboard" element={<SSPleaderboard />} />
           <Route path="swap-details" element={<SwapDetails />} />
+        </Route>
         </Route>
       </Routes>
     </>
