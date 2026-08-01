@@ -1,0 +1,132 @@
+================================================================
+  SkillSwapp — Changes Explanation
+  Written by Kiro AI
+================================================================
+
+
+----------------------------------------------------------------
+  PART 1 — BACKEND REVIEW SYSTEM FIXES
+----------------------------------------------------------------
+
+PROBLEM 1: Wrong field types in Review model
+---------------------------------------------
+File: backend/src/models/Review.js
+
+The "reviewer" and "Review" fields were set to `type: String`
+instead of `mongoose.Schema.Types.ObjectId`. This is wrong because
+MongoDB stores references to other documents as ObjectIds, not
+plain strings. Using String breaks `.populate()` (which is how
+you pull in the user's name, email etc. from the User collection).
+
+Fix: Changed both fields to `mongoose.Schema.Types.ObjectId`.
+
+
+PROBLEM 2: Fatal naming collision in the review controller
+-----------------------------------------------------------
+File: backend/src/controllers/reviewController.js
+
+The Mongoose model was imported like this:
+  const Review = require('../models/Review');
+
+And the request body field was ALSO named "Review":
+  const { Review, skill, rating, comment } = req.body;
+
+JavaScript treated both as the same variable. So when the code
+called `Review.findOne(...)`, it was calling `.findOne()` on a
+plain string from req.body — not on the Mongoose model.
+This caused a complete runtime crash on every review request.
+
+Fix: Renamed the model import to `ReviewModel` throughout the
+controller so there is zero ambiguity.
+
+
+PROBLEM 3: Review required a MongoDB ObjectId for the reviewee
+---------------------------------------------------------------
+Files: backend/src/models/Review.js
+       backend/src/middleware/validators.js
+       backend/src/controllers/reviewController.js
+
+The original design required the person being reviewed to be
+an existing user in the database, identified by their MongoDB ID.
+The validator enforced this with `.isMongoId()`.
+
+You wanted users to simply type any name (free text) — no database
+lookup, no ID required, just submit the review.
+
+Fix:
+- Removed the "Review" (ObjectId ref) field from the model.
+- Added a "revieweeName" field (plain String, optional).
+- Removed the `.isMongoId()` validator check entirely.
+- Made revieweeName optional — you can submit a review with or
+  without typing a name. Only skill, rating, and comment are required.
+- Removed the duplicate-review check that used the old field.
+
+
+POST body to create a review (after fixes):
+  {
+    "revieweeName": "John",   <-- optional, just a name, any text
+    "skill": "Guitar",
+    "rating": 5,
+    "comment": "Great teacher!"
+  }
+
+
+----------------------------------------------------------------
+  PART 2 — FRONTEND AUTH GUARD (Session/Token Redirect)
+----------------------------------------------------------------
+
+PROBLEM: Logged-in users could still visit /login and /register
+----------------------------------------------------------------
+Files: frontend/src/App.jsx
+       frontend/src/components/GuestRoute.jsx  (NEW FILE)
+
+After a user logs in, the app stores their token in localStorage:
+  localStorage.setItem("token", data.token)
+
+But nothing stopped a logged-in user from manually typing
+/login or /register in the browser URL bar. They would see the
+login/register form even though they already have an active session.
+
+HOW THE FIX WORKS:
+A new component called GuestRoute was created. It works like the
+existing ProtectedRoute but in reverse:
+
+  ProtectedRoute  → blocks logged-OUT users from /dashboard
+                    redirects them to /login
+  GuestRoute      → blocks logged-IN users from /login, /register
+                    redirects them to /dashboard
+
+GuestRoute checks localStorage for a "token" key. If it finds one,
+it immediately redirects to /dashboard using React Router's
+<Navigate> with replace=true (so the back button doesn't loop).
+If no token is found, it renders the page normally via <Outlet />.
+
+In App.jsx, the three auth routes are now nested inside GuestRoute:
+  <Route element={<GuestRoute />}>
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/forgot-password" element={<ForgotPassword />} />
+  </Route>
+
+No changes were needed to Login.jsx or Register.jsx themselves —
+the guard sits at the routing level, before the page even renders.
+
+
+----------------------------------------------------------------
+  FILES CHANGED SUMMARY
+----------------------------------------------------------------
+
+Backend:
+  MODIFIED  backend/src/models/Review.js
+  MODIFIED  backend/src/controllers/reviewController.js
+  MODIFIED  backend/src/middleware/validators.js
+  MODIFIED  backend/src/routes/reviewRoutes.js
+
+Frontend:
+  NEW FILE  frontend/src/components/GuestRoute.jsx
+  MODIFIED  frontend/src/App.jsx
+
+Root:
+  NEW FILE  CHANGES_EXPLANATION.txt  (this file)
+
+================================================================

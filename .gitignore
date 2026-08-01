@@ -1,18 +1,37 @@
-# Dependencies
+# Frontend & Backend Dependencies
 node_modules/
 frontend/node_modules/
 backend/node_modules/
 
-# Build output
-frontend/dist/
-
-# Environment files — never commit secrets
-backend/.env
+# Environment Variables & Secrets
+.env
+*.env
+.env.local
+.env.development.local
+.env.production.local
 frontend/.env
-# .env.production is safe to commit (no secrets, just the backend URL)
-# but if you put secrets in it, add it here too
+backend/.env
 
-# Explanation files
-AUTH_EXPLANATION.txt
-REVIEWS_EXPLANATION.txt
-CHANGES_EXPLANATION.txt
+# Build & Output Folders
+dist/
+build/
+frontend/dist/
+frontend/build/
+backend/dist/
+
+# Logs & Runtime
+npm-debug.log*
+yarn-debug.log*
+logs/
+*.log
+
+# Database / Uploads (if backend stores local files)
+backend/uploads/
+*.db
+*.sqlite
+
+# Editor & System Files
+.DS_Store
+.vscode/
+!.vscode/settings.json
+.idea/

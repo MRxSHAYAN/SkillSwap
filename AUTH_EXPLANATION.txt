@@ -1,0 +1,90 @@
+====================================================================
+               SKILLSWAP AUTHENTICATION & LOGIN SYSTEM
+====================================================================
+
+This document explains how the Registration, Login, and Security
+system works in your SkillSwap backend application.
+
+--------------------------------------------------------------------
+1. OVERVIEW OF THE AUTH SYSTEM
+--------------------------------------------------------------------
+Your backend uses JWT (JSON Web Token) and bcrypt password hashing.
+
+- JWT: A digital pass/ticket issued to users when they log in. 
+  The frontend sends this token in headers so the backend knows 
+  who is making requests.
+- bcrypt: Encrypts passwords before saving them into MongoDB so real
+  passwords are never saved in plain text.
+
+
+--------------------------------------------------------------------
+2. HOW REGISTRATION WORKS (POST /api/auth/register)
+--------------------------------------------------------------------
+Step 1: Input Validation
+  - express-validator checks that email is valid, password is at 
+    least 6 characters, and required fields are filled out.
+
+Step 2: Check Existing User
+  - Checks MongoDB to see if the email already exists.
+  - If it exists, returns Error 409 (Conflict).
+
+Step 3: Password Hashing
+  - Before saving to MongoDB, bcrypt automatically hashes the 
+    password with 10 salt rounds (User model pre-save hook).
+
+Step 4: Save User
+  - User profile is created in MongoDB database.
+
+Step 5: Generate JWT Token & Response
+  - Generates a JWT token signed with JWT_SECRET containing the 
+    user's unique MongoDB ID.
+  - Sends back 201 Created status with the token and user details.
+
+
+--------------------------------------------------------------------
+3. HOW LOGIN WORKS (POST /api/auth/login)
+--------------------------------------------------------------------
+Step 1: Receive Email & Password
+  - User submits email and password from the frontend login form.
+
+Step 2: Find User in MongoDB
+  - Searches MongoDB for a matching email address.
+  - If user is not found, returns 401 Unauthorized ("Invalid email or password").
+
+Step 3: Compare Password
+  - Calls user.comparePassword(password).
+  - bcrypt compares the plain text password from login input against 
+    the hashed password saved in MongoDB.
+  - If passwords do not match, returns 401 Unauthorized.
+
+Step 4: Issue JWT Token
+  - If password is correct, backend signs a fresh JWT token using JWT_SECRET.
+  - Returns 200 OK status with the token and user profile data.
+
+
+--------------------------------------------------------------------
+4. HOW PROTECTED ROUTES WORK (authMiddleware.js)
+--------------------------------------------------------------------
+When a user wants to view private pages or perform actions:
+
+1. Frontend includes token in Request Header:
+   Authorization: Bearer <your_jwt_token>
+
+2. Middleware checks token:
+   - Reads token from header.
+   - Verifies signature using JWT_SECRET.
+   - Decodes user ID from token.
+   - Attaches user profile to req.user.
+
+3. Access Granted:
+   - Request moves forward to controller handler.
+
+
+--------------------------------------------------------------------
+5. SUMMARY OF KEY FILES
+--------------------------------------------------------------------
+- backend/src/models/User.js          -> User database schema & password hashing
+- backend/src/controllers/authController.js -> Register & Login logic
+- backend/src/routes/authRoutes.js     -> Endpoint URLs (/register, /login)
+- backend/src/middleware/validators.js -> Form input validation
+- backend/src/middleware/authMiddleware.js -> Protects private routes using JWT
