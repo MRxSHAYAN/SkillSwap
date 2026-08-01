@@ -12,8 +12,8 @@ const connectDB = async () => {
     return cached.conn;
   }
 
-  if (!process.env.MONGODB_URI) {
-    throw new Error('MONGODB_URI environment variable is missing.');
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI environment variable is missing.');
   }
 
   if (!cached.promise) {
@@ -21,7 +21,7 @@ const connectDB = async () => {
       bufferCommands: false, // Prevents hanging on queries if connection drops
     };
 
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(process.env.MONGO_URI, opts).then((mongooseInstance) => {
       console.log('MongoDB Connected Successfully');
       return mongooseInstance;
     });
