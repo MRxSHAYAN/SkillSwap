@@ -106,9 +106,7 @@ export default function DashboardHome() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-10">
       
-      {/* 1. HERO BANNER WITH GRADIENT & USER RANK */}
       <div className="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-6 sm:p-10 shadow-xl shadow-slate-900/10">
-        {/* Decorative Background Glowing Orbs */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -146,7 +144,6 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* 2. CUSTOM STATS CARDS WITH GRADIENT ICON HEADERS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat) => {
           const Icon = stat.icon;
@@ -181,10 +178,8 @@ export default function DashboardHome() {
         })}
       </div>
 
-      {/* 3. MAIN DASHBOARD CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left 2 Columns: Active Skill Exchanges */}
         <div className="lg:col-span-2 space-y-5">
           <div className="flex items-center justify-between">
             <div>
@@ -207,7 +202,6 @@ export default function DashboardHome() {
                 key={swap.id}
                 className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-blue-200 transition-all space-y-4"
               >
-                {/* Header info */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <img
@@ -237,7 +231,6 @@ export default function DashboardHome() {
                   </span>
                 </div>
 
-                {/* Skills Bar */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
@@ -251,7 +244,6 @@ export default function DashboardHome() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center justify-end gap-2 pt-1">
                   <Link to="/dashboard/messages" className="px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer">
                     <MessageSquare size={14} />
@@ -266,10 +258,8 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Right 1 Column: Activity Feed & Quick Hub */}
         <div className="space-y-6">
           
-          {/* Recent Activity */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
             <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
               <Sparkles size={16} className="text-blue-600" />
@@ -297,7 +287,6 @@ export default function DashboardHome() {
             </div>
           </div>
 
-          {/* Community Challenge Widget */}
           <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-5 rounded-2xl text-white space-y-3 shadow-md shadow-indigo-500/20">
             <div className="flex items-center gap-2">
               <Award size={18} className="text-amber-300" />

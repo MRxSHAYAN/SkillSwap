@@ -30,7 +30,6 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <img
               src={logo}
@@ -45,7 +44,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/"
@@ -84,7 +82,6 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
             <Link
               to="/login"
@@ -102,7 +99,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Button */}
           <button
             className="md:hidden text-gray-100  hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -112,7 +108,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Animated Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div

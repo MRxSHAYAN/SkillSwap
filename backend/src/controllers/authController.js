@@ -37,7 +37,6 @@ const register = async (req, res) => {
       ? skillsTeach.split(',').map((skill) => skill.trim()).filter(Boolean)
       : skillsTeach;
 
-    // Create user
     const user = await User.create({
       fullName,
       email,
@@ -47,7 +46,6 @@ const register = async (req, res) => {
       skillsTeach: skillsArray,
     });
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -115,7 +113,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Compare passwords
     const isPasswordCorrect = await user.comparePassword(password);
 
     if (!isPasswordCorrect) {
@@ -125,7 +122,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.status(200).json({

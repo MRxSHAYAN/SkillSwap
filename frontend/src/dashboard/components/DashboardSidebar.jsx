@@ -29,7 +29,6 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
     navigate("/login", { replace: true });
   };
 
-  // Navigation Links for Dashboard
  const mainNavItems = [
   { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
   { name: "New Swap", path: "/dashboard/new-swap", icon: PlusCircle },
@@ -60,15 +59,12 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
         />
       )}
 
-      {/* Sidebar Container */}
       <aside
         className={`fixed lg:static top-0 left-0 z-50 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        {/* TOP SECTION: Logo & Main Nav */}
         <div className="p-5 flex flex-col gap-6 overflow-y-auto no-scrollbar">
-          {/* Brand Header */}
           <div className="flex items-center justify-between">
             <Link to="/dashboard" className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
@@ -88,7 +84,6 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
             </button>
           </div>
 
-          {/* Main Navigation Links */}
           <nav className="space-y-1">
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
               Menu
@@ -119,13 +114,11 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
           </nav>
         </div>
 
-        {/* BOTTOM SECTION: Settings & Logout */}
         <div className="p-5 border-t border-slate-100 space-y-1">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
             Preferences
           </p>
 
-          {/* Preferences Links */}
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -150,7 +143,6 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
             );
           })}
 
-          {/* Logout Button */}
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"

@@ -45,19 +45,10 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth routes (login & register)
 app.use('/api/auth', authRoutes);
-
-// User settings routes (protected)
 app.use('/api/user', userRoutes);
-
-// Review routes
 app.use('/api/reviews', reviewRoutes);
-
-// Newsletter routes
 app.use('/api/newsletter', newsletterRoutes);
-
-// Contact routes
 app.use('/api/contact', contactRoutes);
 
 // Handle 404 for unknown routes

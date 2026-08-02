@@ -44,11 +44,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Store token and user data
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Redirect to dashboard
       navigate("/dashboard");
     } catch (err) {
       setError("Unable to connect to server. Please try again later.");

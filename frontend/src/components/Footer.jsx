@@ -13,10 +13,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-black text-white border-t border-white/10 relative overflow-hidden">
-      {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-white/5 blur-3xl rounded-full pointer-events-none" />
 
-      {/* Scroll Animated Container */}
       <motion.div
         initial={{ y: 40, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
@@ -25,7 +23,6 @@ export default function Footer() {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10"
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
-          {/* Logo & Tagline */}
           <div className="md:col-span-5 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2">
               <img
@@ -43,7 +40,6 @@ export default function Footer() {
               grind. Pure peer-to-peer learning with zero fluff.
             </p>
 
-            {/* Gen-Z Micro Badges */}
             <div className="flex flex-wrap gap-2 pt-2">
               <span className="text-xs px-3 py-1 rounded-full border border-white/15 bg-white/5 text-gray-300 font-mono">
                 ⚡ 100% Peer-to-Peer
@@ -54,7 +50,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation Links using React Router Link */}
           <div className="md:col-span-3 space-y-3">
             <h4 className="text-xs font-mono uppercase tracking-widest text-gray-400">
               // Navigation
@@ -125,7 +120,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Social Links */}
           <div className="md:col-span-4 space-y-4">
             <h4 className="text-xs font-mono uppercase tracking-widest text-gray-400">
               // Community Vibes
@@ -169,7 +163,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Metadata & Scroll to Top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs hover:text-white transition-colors">
           <div className="flex items-center gap-1">
             <span>

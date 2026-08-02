@@ -157,7 +157,7 @@ export default function Settings() {
         )}
       </div>
 
-      {/* Global error */}
+      {/* Global error — shown above tabs so it's always visible */}
       {error && (
         <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
           <AlertCircle size={15} className="shrink-0" /><span>{error}</span>
@@ -179,11 +179,9 @@ export default function Settings() {
         ))}
       </div>
 
-      {/* ── TAB 1: ACCOUNT ─────────────────────────────────────────────────── */}
       {activeTab === "account" && (
         <form onSubmit={handleSaveAccount} className="space-y-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
-            {/* Avatar */}
             <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
               <div className="relative w-16 h-16 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 group">
                 {displayAvatar
@@ -201,11 +199,10 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               {[
                 { label: "Full Name", key: "fullName", type: "text", required: true, placeholder: "" },
-                { label: "Username", key: "username", type: "text", required: false, placeholder: "e.g. mshayan_dev" },
+                { label: "Username", key: "username", type: "text", required: false, placeholder: "e.g. User_123" },
                 { label: "Email Address", key: "email", type: "email", required: true, placeholder: "" },
                 { label: "Timezone", key: "timezone", type: "text", required: false, placeholder: "e.g. UTC +5:00 (PKT)" },
               ].map(({ label, key, type, required, placeholder }) => (
@@ -236,7 +233,6 @@ export default function Settings() {
         </form>
       )}
 
-      {/* ── TAB 2: SWAP PREFERENCES ────────────────────────────────────────── */}
       {activeTab === "preferences" && (
         <form onSubmit={handleSavePrefs} className="space-y-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
@@ -272,7 +268,6 @@ export default function Settings() {
         </form>
       )}
 
-      {/* ── TAB 3: NOTIFICATIONS ───────────────────────────────────────────── */}
       {activeTab === "notifications" && (
         <form onSubmit={handleSavePrefs} className="space-y-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
@@ -306,7 +301,6 @@ export default function Settings() {
         </form>
       )}
 
-      {/* ── TAB 4: SECURITY ────────────────────────────────────────────────── */}
       {activeTab === "security" && (
         <div className="space-y-6">
           {/* Change Password */}
@@ -362,7 +356,6 @@ export default function Settings() {
         </div>
       )}
 
-      {/* ── Delete Account Confirmation Modal ──────────────────────────────── */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 w-full max-w-sm space-y-4">

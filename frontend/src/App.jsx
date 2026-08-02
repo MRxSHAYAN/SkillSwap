@@ -4,11 +4,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 
-// Layouts
 import PublicLayout from "./layouts/PublicLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 
-// Public Pages
 import Home from "./pages/Home";
 import About from "./pages/About";
 import ExploreSkills from "./pages/ExploreSkills";
@@ -18,7 +16,6 @@ import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 
-// Dashboard Pages
 import DashboardHome from "./dashboard/DashboardHome";
 import ViewAllNotifications from "./dashboard/pages/ViewAllNotifications";
 import PublicProfile from "./dashboard/pages/PublicProfile";

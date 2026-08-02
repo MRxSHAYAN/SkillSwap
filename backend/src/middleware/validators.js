@@ -18,7 +18,6 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// Validation rules for registration
 const registerValidation = [
   body('fullName')
     .trim()
@@ -57,7 +56,6 @@ const registerValidation = [
   handleValidationErrors,
 ];
 
-// Validation rules for login
 const loginValidation = [
   body('email')
     .trim()
@@ -74,7 +72,6 @@ const loginValidation = [
   handleValidationErrors,
 ];
 
-// Validation rules for creating a review
 const createReviewValidation = [
   body('revieweeName')
     .optional()
@@ -103,7 +100,6 @@ const createReviewValidation = [
   handleValidationErrors,
 ];
 
-// Validation rules for updating a review
 const updateReviewValidation = [
   body('rating')
     .optional()

@@ -60,10 +60,8 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Category Filter State
   const [selectedFilter, setSelectedFilter] = useState("All");
 
-  // Feedback Form State
   const [Review, setReview] = useState("");
   const [skill, setSkill] = useState("");
   const [rating, setRating] = useState(5);
@@ -73,13 +71,11 @@ export default function ReviewsPage() {
   const [formError, setFormError] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  // Auth Context
   const token = localStorage.getItem("token");
   const currentUser = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
     : null;
 
-  // Scroll to hash section
   useEffect(() => {
     if (hash) {
       const targetElement = document.getElementById(hash.replace("#", ""));
