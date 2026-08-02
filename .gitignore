@@ -58,3 +58,9 @@ Thumbs.db
 *.sqlite
 backend/uploads/
 coverage/
+
+
+AUTH_EXPLANATION.txt
+CHANGES_EXPLANATION.txt
+HOW_IT_WORKS.txt
+REVIEWS_EXPLANATION.txt

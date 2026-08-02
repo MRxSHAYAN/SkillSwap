@@ -40,6 +40,42 @@ const userSchema = new mongoose.Schema(
       type: [String],
       required: [true, 'At least one skill is required'],
     },
+    username: {
+      type: String,
+      trim: true,
+      sparse: true,   // allows multiple null values with unique index
+      unique: true,   // prevents duplicate usernames
+      maxlength: [30, 'Username cannot exceed 30 characters'],
+      default: null,
+    },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: [300, 'Bio cannot exceed 300 characters'],
+      default: null,
+    },
+    timezone: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'Timezone cannot exceed 100 characters'],
+      default: null,
+    },
+    avatarUrl: {
+      type: String,
+      default: null, // null = render default person icon in UI
+    },
+    // Notification preferences
+    notificationPrefs: {
+      emailSwaps:       { type: Boolean, default: true  },
+      emailMessages:    { type: Boolean, default: true  },
+      emailReminders:   { type: Boolean, default: true  },
+      marketingUpdates: { type: Boolean, default: false },
+    },
+    // Swap preferences
+    swapPrefs: {
+      acceptProposals: { type: Boolean, default: true  },
+      meetingLink:     { type: String,  default: ''    },
+    },
     role: {
       type: String,
       enum: ['user', 'admin'],

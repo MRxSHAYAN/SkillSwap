@@ -139,7 +139,6 @@ export default function Home() {
     }
   };
 
-
   return (
     <>
       {/* HERO SECTION */}
@@ -228,31 +227,30 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="lg:col-span-5 relative h-[320px] sm:h-[450px] lg:h-[520px] w-full flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm shadow-2xl overflow-hidden"
+              className="lg:col-span-5 relative h-[360px] sm:h-[480px] lg:h-[520px] w-full flex items-center justify-center rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm shadow-2xl overflow-hidden"
             >
               {!is3DLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs font-mono bg-black/40 z-20 pointer-events-none">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs font-mono bg-black/80 z-20 pointer-events-none">
                   <Loader2 size={24} className="animate-spin text-blue-600" />
                   <span>Loading 3D Scene...</span>
                 </div>
               )}
 
-              {/* Spline iframe */}
-              <iframe
-                src="https://my.spline.design/vectorshapecopycopy-bPC0H6NG0qYVBvTUFlPDhoU8-9bJ/"
-                onLoad={() => setIs3DLoaded(true)}
-                title="3D SkillSwap Scene"
-                className="w-full h-full border-0 pointer-events-none"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  overflow: "hidden",
-                }}
-              />
+              {/* iframe container with scaling trick */}
+              <div className="w-full h-full relative flex items-center justify-center overflow-hidden">
+                <iframe
+                  src="https://my.spline.design/vectorshapecopycopy-bPC0H6NG0qYVBvTUFlPDhoU8-9bJ/"
+                  onLoad={() => setIs3DLoaded(true)}
+                  title="3D SkillSwap Scene"
+                  className="w-[110%] h-[110%] border-0 pointer-events-auto scale-90 sm:scale-95"
+                  style={{
+                    border: "none",
+                  }}
+                />
+              </div>
 
-              {/* Static badge overlay for hide Spline watermark */}
-              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none z-10">
+              {/* Static badge overlay for hiding Spline watermark */}
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 rounded-xl bg-black/80 border border-white/10 backdrop-blur-md flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-300 pointer-events-none z-10">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Grow With Your Skills

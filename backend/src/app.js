@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const newsletterRoutes = require('./routes/newsletterRoutes');
 const contactRoutes = require('./routes/contactRoutes');
@@ -8,8 +9,8 @@ const contactRoutes = require('./routes/contactRoutes');
 const app = express();
 
 // Allow json and form data
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
 
 // Dynamic CORS configuration (Allows localhost AND your deployed frontend)
 const allowedOrigins = [
@@ -46,6 +47,9 @@ app.get('/api/health', (req, res) => {
 
 // Auth routes (login & register)
 app.use('/api/auth', authRoutes);
+
+// User settings routes (protected)
+app.use('/api/user', userRoutes);
 
 // Review routes
 app.use('/api/reviews', reviewRoutes);

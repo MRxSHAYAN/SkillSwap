@@ -57,7 +57,11 @@ const register = async (req, res) => {
       user: {
         id: user._id,
         fullName: user.fullName,
+        username: user.username,
         email: user.email,
+        bio: user.bio,
+        timezone: user.timezone,
+        avatarUrl: user.avatarUrl,
         country: user.country,
         languages: user.languages,
         skillsTeach: user.skillsTeach,
@@ -131,7 +135,11 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         fullName: user.fullName,
+        username: user.username,
         email: user.email,
+        bio: user.bio,
+        timezone: user.timezone,
+        avatarUrl: user.avatarUrl,
         country: user.country,
         languages: user.languages,
         skillsTeach: user.skillsTeach,

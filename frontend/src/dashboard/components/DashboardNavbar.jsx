@@ -15,9 +15,51 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // Pull real user data from localStorage
-  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const userName = storedUser.fullName || "User";
+  // Use state so the navbar re-renders whenever localStorage is updated
+  // (e.g. after saving profile in Settings)
+  const [storedUser, setStoredUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user") || "{}")
+  );
+
+  // On mount: fetch fresh profile from API so avatar is always up to date
+  // (login/register responses now include avatarUrl, but this covers edge cases)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    fetch("/api/user/settings/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.user) {
+          const merged = {
+            ...JSON.parse(localStorage.getItem("user") || "{}"),
+            ...data.user,
+          };
+          localStorage.setItem("user", JSON.stringify(merged));
+          setStoredUser(merged);
+        }
+      })
+      .catch(() => {}); // silently ignore — navbar still works from localStorage
+  }, []);
+
+  // Re-sync from localStorage whenever the window regains focus or a
+  // custom "userUpdated" event is fired from Settings after a save
+  useEffect(() => {
+    const sync = () =>
+      setStoredUser(JSON.parse(localStorage.getItem("user") || "{}"));
+
+    window.addEventListener("focus", sync);
+    window.addEventListener("userUpdated", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("userUpdated", sync);
+    };
+  }, []);
+
+  const userName     = storedUser.fullName || "User";
+  const userAvatar   = storedUser.avatarUrl || null;
   const userInitials = userName
     .split(" ")
     .map((n) => n[0])
@@ -191,7 +233,15 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
             className="flex items-center gap-3 pl-1 hover:opacity-80 transition-opacity cursor-pointer focus:outline-none"
           >
             <div className="w-9 h-9 rounded-full bg-blue-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-blue-700 font-bold text-xs">
-              {userInitials}
+              {userAvatar ? (
+                <img
+                  src={userAvatar}
+                  alt={userName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                userInitials
+              )}
             </div>
             <div className="hidden md:block text-left">
               <h5 className="text-xs font-bold text-slate-900 leading-none">
