@@ -1,37 +1,60 @@
-# Frontend & Backend Dependencies
+# ──────────────────────────────────────────
+# Dependencies
+# ──────────────────────────────────────────
 node_modules/
-frontend/node_modules/
-backend/node_modules/
 
+# ──────────────────────────────────────────
 # Environment Variables & Secrets
+# ──────────────────────────────────────────
 .env
-*.env
 .env.local
+.env.development
+.env.production
 .env.development.local
 .env.production.local
-frontend/.env
-backend/.env
+.env.test.local
+# Keep .env.example files (they contain no secrets)
+!.env.example
 
-# Build & Output Folders
+# ──────────────────────────────────────────
+# Build & Output
+# ──────────────────────────────────────────
 dist/
 build/
-frontend/dist/
-frontend/build/
-backend/dist/
+dist-ssr/
 
-# Logs & Runtime
-npm-debug.log*
-yarn-debug.log*
+# ──────────────────────────────────────────
+# Logs
+# ──────────────────────────────────────────
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Database / Uploads (if backend stores local files)
-backend/uploads/
-*.db
-*.sqlite
+# ──────────────────────────────────────────
+# Runtime & Cache
+# ──────────────────────────────────────────
+.cache/
+.parcel-cache/
+.vite/
+*.tsbuildinfo
 
-# Editor & System Files
+# ──────────────────────────────────────────
+# OS & Editor
+# ──────────────────────────────────────────
 .DS_Store
+Thumbs.db
 .vscode/
 !.vscode/settings.json
+!.vscode/extensions.json
 .idea/
+
+# ──────────────────────────────────────────
+# Misc
+# ──────────────────────────────────────────
+*.db
+*.sqlite
+backend/uploads/
+coverage/
