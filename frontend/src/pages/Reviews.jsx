@@ -62,7 +62,7 @@ export default function ReviewsPage() {
 
   const [selectedFilter, setSelectedFilter] = useState("All");
 
-  const [Review, setReview] = useState("");
+  const [revieweeName, setRevieweeName] = useState("");
   const [skill, setSkill] = useState("");
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
@@ -143,8 +143,8 @@ export default function ReviewsPage() {
       return;
     }
 
-    if (!Review || Review.trim() === "") {
-      setFormError("Please enter a valid User ID to review.");
+    if (!revieweeName || revieweeName.trim() === "") {
+      setFormError("Please enter the name of the peer you are reviewing.");
       return;
     }
 
@@ -167,7 +167,7 @@ export default function ReviewsPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          Review: Review.trim(),
+          revieweeName: revieweeName.trim(),
           skill: skill.trim(),
           rating,
           comment: comment.trim(),
@@ -187,7 +187,7 @@ export default function ReviewsPage() {
 
       setSubmitted(true);
       setComment("");
-      setReview("");
+      setRevieweeName("");
       setSkill("");
       setRating(5);
       // Refresh live reviews list from database
@@ -284,7 +284,7 @@ export default function ReviewsPage() {
             {filteredReviews.map((review) => {
               const reviewerName = review.reviewer?.fullName || "Anonymous Peer";
               const reviewerCountry = review.reviewer?.country || "Global";
-              const ReviewName = review.Review?.fullName || "Peer Mentor";
+              const revieweeDisplayName = review.revieweeName || review.Review?.fullName || "Peer Mentor";
               const initials = reviewerName
                 .split(" ")
                 .map((n) => n[0])
@@ -314,7 +314,7 @@ export default function ReviewsPage() {
                             />
                           </div>
                           <p className="text-[11px] text-slate-500">
-                            {reviewerCountry} • Reviewed {ReviewName}
+                            {reviewerCountry} • Reviewed {revieweeDisplayName}
                           </p>
                         </div>
                       </div>
@@ -420,16 +420,16 @@ export default function ReviewsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Review User Name
+                    Peer Name (Being Reviewed)
                   </label>
                   <input
-                   type="text"
-                   value={Review}
-                   onChange={(e) => setReview(e.target.value)}
-                   placeholder="e.g. Alex Rivera or John Doe"
-                   required
-                   className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:bg-white focus:border-blue-500 transition-all"
-                   ></input>
+                    type="text"
+                    value={revieweeName}
+                    onChange={(e) => setRevieweeName(e.target.value)}
+                    placeholder="e.g. Alex Rivera or John Doe"
+                    required
+                    className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:bg-white focus:border-blue-500 transition-all"
+                  />
                 </div>
 
                 <div>

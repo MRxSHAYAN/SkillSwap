@@ -22,7 +22,9 @@ const connectDB = async () => {
     };
 
     cached.promise = mongoose.connect(process.env.MONGO_URI, opts).then((mongooseInstance) => {
-      console.log('MongoDB Connected Successfully');
+      const isLocal = process.env.MONGO_URI.includes('localhost') || process.env.MONGO_URI.includes('127.0.0.1');
+      console.log(`\n MongoDB Connected Successfully [${isLocal ? 'LOCAL DATABASE' : 'CLOUD ATLAS'}]`);
+      console.log(`   └─ URI: ${process.env.MONGO_URI.split('@').pop()}\n`);
       return mongooseInstance;
     });
   }

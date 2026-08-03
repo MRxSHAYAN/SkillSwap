@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true, limit: '50kb' }));
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'http://localhost:5000',
   process.env.FRONTEND_URL, // e.g. https://your-frontend.vercel.app
 ];
 
