@@ -19,8 +19,18 @@ const register = async (req, res) => {
   try {
     const { fullName, email, password, country, languages, skillsTeach } = req.body;
 
+    // Guard: email must be a non-empty string before querying
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'A valid email address is required',
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(409).json({
         success: false,
@@ -31,17 +41,17 @@ const register = async (req, res) => {
     // Parse comma-separated strings into arrays
     const languagesArray = typeof languages === 'string'
       ? languages.split(',').map((lang) => lang.trim()).filter(Boolean)
-      : languages;
+      : Array.isArray(languages) ? languages : [];
 
     const skillsArray = typeof skillsTeach === 'string'
       ? skillsTeach.split(',').map((skill) => skill.trim()).filter(Boolean)
-      : skillsTeach;
+      : Array.isArray(skillsTeach) ? skillsTeach : [];
 
     const user = await User.create({
-      fullName,
-      email,
+      fullName: typeof fullName === 'string' ? fullName.trim() : fullName,
+      email: cleanEmail,
       password,
-      country,
+      country: typeof country === 'string' ? country.trim() : country,
       languages: languagesArray,
       skillsTeach: skillsArray,
     });
@@ -68,12 +78,14 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    // Handle Mongoose duplicate key error
+    // Handle Mongoose duplicate key error — inspect which field actually conflicted
     if (error.code === 11000) {
-      return res.status(409).json({
-        success: false,
-        message: 'An account with this email already exists',
-      });
+      const keys = Object.keys(error.keyPattern || error.keyValue || {});
+      const field = keys[0] || 'email';
+      const message = field === 'email'
+        ? 'An account with this email already exists'
+        : `A conflict occurred on field "${field}". Please try again.`;
+      return res.status(409).json({ success: false, message });
     }
 
     // Handle Mongoose validation errors

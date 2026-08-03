@@ -45,9 +45,17 @@ const updateMe = async (req, res) => {
 
     // Build update object — only include defined fields so partial updates work.
     const updateFields = {};
+    const unsetFields = {};
+
     if (fullName  !== undefined) updateFields.fullName  = fullName.trim();
-    // Store empty username as null so the sparse unique index works correctly
-    if (username  !== undefined) updateFields.username  = username.trim() || null;
+    if (username  !== undefined) {
+      const trimmedUsername = username.trim();
+      if (trimmedUsername) {
+        updateFields.username = trimmedUsername;
+      } else {
+        unsetFields.username = 1;
+      }
+    }
     if (bio       !== undefined) updateFields.bio       = bio.trim() || null;
     if (timezone  !== undefined) updateFields.timezone  = timezone.trim() || null;
     if (email     !== undefined) updateFields.email     = email.trim().toLowerCase();
@@ -71,7 +79,7 @@ const updateMe = async (req, res) => {
       }
     }
 
-    // If username is being changed, ensure uniqueness (skip if clearing to null).
+    // If username is being changed, ensure uniqueness.
     if (updateFields.username && updateFields.username !== req.user.username) {
       const usernameTaken = await User.findOne({ username: updateFields.username });
       if (usernameTaken) {
@@ -82,10 +90,15 @@ const updateMe = async (req, res) => {
       }
     }
 
+    const updateQuery = { $set: updateFields };
+    if (Object.keys(unsetFields).length > 0) {
+      updateQuery.$unset = unsetFields;
+    }
+
     // Update using req.user._id — never a client-supplied ID.
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { $set: updateFields },
+      updateQuery,
       {
         new: true,            // return the updated document
         runValidators: true,  // run schema validations on the new values

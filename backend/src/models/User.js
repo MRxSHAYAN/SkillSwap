@@ -43,10 +43,9 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       trim: true,
-      sparse: true,   // allows multiple null values with unique index
+      sparse: true,   // allows missing username fields without breaking unique index
       unique: true,   // prevents duplicate usernames
       maxlength: [30, 'Username cannot exceed 30 characters'],
-      default: null,
     },
     bio: {
       type: String,
