@@ -27,10 +27,14 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [emailExists, setEmailExists] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (error) setError(""); // Clear error on new input
+    if (error) {
+      setError("");
+      setEmailExists(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +57,9 @@ export default function RegisterPage() {
           const firstError = data.errors[0];
           setError(firstError.message || firstError);
         } else {
-          setError(data.message || "Registration failed. Please try again.");
+          const msg = data.message || "Registration failed. Please try again.";
+          setError(msg);
+          if (res.status === 409) setEmailExists(true);
         }
         return;
       }
@@ -136,9 +142,22 @@ export default function RegisterPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm animate-[fadeIn_0.3s_ease]">
-              <AlertCircle size={16} className="shrink-0" />
-              <span>{error}</span>
+            <div className="mb-4 flex items-start gap-2.5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm animate-[fadeIn_0.3s_ease]">
+              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <span>
+                {error}
+                {emailExists && (
+                  <>
+                    {" "}
+                    <a
+                      href="/login"
+                      className="underline underline-offset-2 font-semibold hover:text-red-800 transition-colors"
+                    >
+                      Sign in instead?
+                    </a>
+                  </>
+                )}
+              </span>
             </div>
           )}
 

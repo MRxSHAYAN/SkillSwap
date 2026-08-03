@@ -32,7 +32,7 @@ const registerValidation = [
     .withMessage('Email is required')
     .isEmail()
     .withMessage('Please provide a valid email address')
-    .normalizeEmail(),
+    .customSanitizer((value) => value.toLowerCase()),
 
   body('password')
     .notEmpty()
@@ -63,7 +63,7 @@ const loginValidation = [
     .withMessage('Email is required')
     .isEmail()
     .withMessage('Please provide a valid email address')
-    .normalizeEmail(),
+    .customSanitizer((value) => value.toLowerCase()),
 
   body('password')
     .notEmpty()
