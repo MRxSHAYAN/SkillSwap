@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');
 
 /**
  * Generate a JWT token for a given user ID.
@@ -164,4 +165,125 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+/**
+ * @desc    Request Password Reset OTP
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address',
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with this email address',
+      });
+    }
+
+    // Generate random 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set expiration time (10 minutes)
+    const otpExpire = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.resetOtp = otp;
+    user.resetOtpExpire = otpExpire;
+    await user.save();
+
+    // Send email / log OTP
+    await sendEmail({
+      to: user.email,
+      subject: 'SkillSwapp - Your Password Reset OTP',
+      otp,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'OTP verification code sent to your email address',
+    });
+  } catch (error) {
+    console.error('ForgotPassword error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process forgot password request. Please try again later.',
+    });
+  }
+};
+
+/**
+ * @desc    Reset Password with OTP
+ * @route   POST /api/auth/reset-password
+ * @access  Public
+ */
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, OTP, and new password are all required',
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanOtp = String(otp).trim();
+
+    // Find user with resetOtp, resetOtpExpire, and password fields
+    const user = await User.findOne({ email: cleanEmail }).select('+resetOtp +resetOtpExpire +password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with this email address',
+      });
+    }
+
+    if (!user.resetOtp || user.resetOtp !== cleanOtp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid 6-digit OTP code. Please check and try again.',
+      });
+    }
+
+    if (!user.resetOtpExpire || new Date(user.resetOtpExpire).getTime() < Date.now()) {
+      return res.status(400).json({
+        success: false,
+        message: 'OTP code has expired. Please request a new OTP code.',
+      });
+    }
+
+    // Set new password (pre-save hook will hash it with bcrypt)
+    user.password = newPassword;
+    // Clear OTP fields
+    user.resetOtp = undefined;
+    user.resetOtpExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully! You can now log in with your new password.',
+    });
+  } catch (error) {
+    console.error('ResetPassword error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reset password. Please try again later.',
+    });
+  }
+};
+
+module.exports = { register, login, forgotPassword, resetPassword };
+

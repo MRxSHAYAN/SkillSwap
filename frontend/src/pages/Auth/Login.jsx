@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -11,8 +11,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const successMessage = location.state?.successMessage || "";
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -118,6 +122,14 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Success Notification (from password reset redirect) */}
+          {successMessage && !error && (
+            <div className="mb-4 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm animate-[fadeIn_0.3s_ease]">
+              <CheckCircle2 size={16} className="shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+          )}
+
           {/* Error Message */}
           {error && (
             <div className="mb-4 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm animate-[fadeIn_0.3s_ease]">
@@ -151,12 +163,13 @@ export default function LoginPage() {
                 <label className="text-xs font-semibold text-slate-700">
                   Password
                 </label>
-                <a
-                  href="/forgot-password"
+                <Link
+                  to="/forgot-password"
+                  id="link-forgot-password"
                   className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -195,12 +208,12 @@ export default function LoginPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <p className="text-xs text-slate-500">
               Don't have an account?{" "}
-              <a
-                href="/register"
+              <Link
+                to="/register"
                 className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-4 ml-1 transition-colors"
               >
                 Create account here
-              </a>
+              </Link>
             </p>
           </div>
         </div>

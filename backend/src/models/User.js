@@ -80,6 +80,17 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    // Password reset fields
+    resetOtp: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    resetOtpExpire: {
+      type: Date,
+      default: null,
+      select: false,
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt

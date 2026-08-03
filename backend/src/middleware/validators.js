@@ -121,11 +121,50 @@ const updateReviewValidation = [
   handleValidationErrors,
 ];
 
+const forgotPasswordValidation = [
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .customSanitizer((value) => value.toLowerCase()),
+
+  handleValidationErrors,
+];
+
+const resetPasswordValidation = [
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .customSanitizer((value) => value.toLowerCase()),
+
+  body('otp')
+    .trim()
+    .notEmpty()
+    .withMessage('OTP code is required')
+    .isLength({ min: 6, max: 6 })
+    .withMessage('OTP code must be 6 digits'),
+
+  body('newPassword')
+    .notEmpty()
+    .withMessage('New password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
+
+  handleValidationErrors,
+];
+
 module.exports = {
   registerValidation,
   loginValidation,
   createReviewValidation,
   updateReviewValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation,
   handleValidationErrors,
 };
 
