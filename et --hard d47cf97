@@ -1,0 +1,200 @@
+[33mcommit d47cf97a741c330c4d78f15d977c737ddfe795ce[m
+Author: VisionXdev <shayan.shani0321@gmail.com>
+Date:   Tue Aug 4 02:45:08 2026 +0500
+
+    Forget password on login page funtionality added version 1.1 :)
+
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex b45c8bd..a245bd5 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -63,4 +63,5 @@[m [mcoverage/[m
+ AUTH_EXPLANATION.txt[m
+ CHANGES_EXPLANATION.txt[m
+ HOW_IT_WORKS.txt[m
+[31m-REVIEWS_EXPLANATION.txt[m
+\ No newline at end of file[m
+[32m+[m[32mREVIEWS_EXPLANATION.txt[m
+[32m+[m[32mFORGOT_PASSWORD_HOW_IT_WORKS.txt[m
+\ No newline at end of file[m
+[1mdiff --git a/backend/package-lock.json b/backend/package-lock.json[m
+[1mindex 8ce68b3..61e5cb6 100644[m
+[1m--- a/backend/package-lock.json[m
+[1m+++ b/backend/package-lock.json[m
+[36m@@ -17,7 +17,8 @@[m
+         "jsonwebtoken": "^9.0.2",[m
+         "mongodb": "^7.5.0",[m
+         "mongoose": "^8.24.2",[m
+[31m-        "multer": "2.2.0"[m
+[32m+[m[32m        "multer": "2.2.0",[m
+[32m+[m[32m        "nodemailer": "^9.0.3"[m
+       },[m
+       "devDependencies": {[m
+         "nodemon": "^3.1.10"[m
+[36m@@ -1235,6 +1236,15 @@[m
+         "node": ">= 0.6"[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/nodemailer": {[m
+[32m+[m[32m      "version": "9.0.3",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-9.0.3.tgz",[m
+[32m+[m[32m      "integrity": "sha512-n+YP+NKwR5zRWa60k3GiQ6Q3B4KXCoAw40dAKeCtYn020iNN74aWK2liXIC3ZEATeGql7we3tE3t8QwhY0eskw==",[m
+[32m+[m[32m      "license": "MIT-0",[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=6.0.0"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/nodemon": {[m
+       "version": "3.1.14",[m
+       "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-3.1.14.tgz",[m
+[1mdiff --git a/backend/package.json b/backend/package.json[m
+[1mindex f307d9e..0a68d66 100644[m
+[1m--- a/backend/package.json[m
+[1m+++ b/backend/package.json[m
+[36m@@ -21,7 +21,8 @@[m
+     "jsonwebtoken": "^9.0.2",[m
+     "mongodb": "^7.5.0",[m
+     "mongoose": "^8.24.2",[m
+[31m-    "multer": "2.2.0"[m
+[32m+[m[32m    "multer": "2.2.0",[m
+[32m+[m[32m    "nodemailer": "^9.0.3"[m
+   },[m
+   "devDependencies": {[m
+     "nodemon": "^3.1.10"[m
+[1mdiff --git a/backend/src/controllers/authController.js b/backend/src/controllers/authController.js[m
+[1mindex 97fdc65..fe48a98 100644[m
+[1m--- a/backend/src/controllers/authController.js[m
+[1m+++ b/backend/src/controllers/authController.js[m
+[36m@@ -1,5 +1,6 @@[m
+ const jwt = require('jsonwebtoken');[m
+ const User = require('../models/User');[m
+[32m+[m[32mconst sendEmail = require('../utils/sendEmail');[m
+ [m
+ /**[m
+  * Generate a JWT token for a given user ID.[m
+[36m@@ -164,4 +165,125 @@[m [mconst login = async (req, res) => {[m
+   }[m
+ };[m
+ [m
+[31m-module.exports = { register, login };[m
+[32m+[m[32m/**[m
+[32m+[m[32m * @desc    Request Password Reset OTP[m
+[32m+[m[32m * @route   POST /api/auth/forgot-password[m
+[32m+[m[32m * @access  Public[m
+[32m+[m[32m */[m
+[32m+[m[32mconst forgotPassword = async (req, res) => {[m
+[32m+[m[32m  try {[m
+[32m+[m[32m    const { email } = req.body;[m
+[32m+[m
+[32m+[m[32m    if (!email || typeof email !== 'string') {[m
+[32m+[m[32m      return res.status(400).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'Please provide a valid email address',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    const cleanEmail = email.trim().toLowerCase();[m
+[32m+[m[32m    const user = await User.findOne({ email: cleanEmail });[m
+[32m+[m
+[32m+[m[32m    if (!user) {[m
+[32m+[m[32m      return res.status(404).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'No account found with this email address',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    // Generate random 6-digit OTP[m
+[32m+[m[32m    const otp = Math.floor(100000 + Math.random() * 900000).toString();[m
+[32m+[m
+[32m+[m[32m    // Set expiration time (10 minutes)[m
+[32m+[m[32m    const otpExpire = new Date(Date.now() + 10 * 60 * 1000);[m
+[32m+[m
+[32m+[m[32m    user.resetOtp = otp;[m
+[32m+[m[32m    user.resetOtpExpire = otpExpire;[m
+[32m+[m[32m    await user.save();[m
+[32m+[m
+[32m+[m[32m    // Send email / log OTP[m
+[32m+[m[32m    await sendEmail({[m
+[32m+[m[32m      to: user.email,[m
+[32m+[m[32m      subject: 'SkillSwapp - Your Password Reset OTP',[m
+[32m+[m[32m      otp,[m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m[32m    res.status(200).json({[m
+[32m+[m[32m      success: true,[m
+[32m+[m[32m      message: 'OTP verification code sent to your email address',[m
+[32m+[m[32m    });[m
+[32m+[m[32m  } catch (error) {[m
+[32m+[m[32m    console.error('ForgotPassword error:', error);[m
+[32m+[m[32m    res.status(500).json({[m
+[32m+[m[32m      success: false,[m
+[32m+[m[32m      message: 'Failed to process forgot password request. Please try again later.',[m
+[32m+[m[32m    });[m
+[32m+[m[32m  }[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32m/**[m
+[32m+[m[32m * @desc    Reset Password with OTP[m
+[32m+[m[32m * @route   POST /api/auth/reset-password[m
+[32m+[m[32m * @access  Public[m
+[32m+[m[32m */[m
+[32m+[m[32mconst resetPassword = async (req, res) => {[m
+[32m+[m[32m  try {[m
+[32m+[m[32m    const { email, otp, newPassword } = req.body;[m
+[32m+[m
+[32m+[m[32m    if (!email || !otp || !newPassword) {[m
+[32m+[m[32m      return res.status(400).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'Email, OTP, and new password are all required',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    const cleanEmail = email.trim().toLowerCase();[m
+[32m+[m[32m    const cleanOtp = String(otp).trim();[m
+[32m+[m
+[32m+[m[32m    // Find user with resetOtp, resetOtpExpire, and password fields[m
+[32m+[m[32m    const user = await User.findOne({ email: cleanEmail }).select('+resetOtp +resetOtpExpire +password');[m
+[32m+[m
+[32m+[m[32m    if (!user) {[m
+[32m+[m[32m      return res.status(404).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'No account found with this email address',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (!user.resetOtp || user.resetOtp !== cleanOtp) {[m
+[32m+[m[32m      return res.status(400).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'Invalid 6-digit OTP code. Please check and try again.',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (!user.resetOtpExpire || new Date(user.resetOtpExpire).getTime() < Date.now()) {[m
+[32m+[m[32m      return res.status(400).json({[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        message: 'OTP code has expired. Please request a new OTP code.',[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    // Set new password (pre-save hook will hash it with bcrypt)[m
+[32m+[m[32m    user.password = newPassword;[m
+[32m+[m[32m    // Clear OTP fields[m
+[32m+[m[32m    user.resetOtp = undefined;[m
+[32m+[m[32m    user.resetOtpExpire = undefined;[m
+[32m+[m
+[32m+[m[32m    await user.save();[m
+[32m+[m
+[32m+[m[32m    res.status(200).json({[m
+[32m+[m[32m      success: true,[m
+[32m+[m[32m      message: 'Password reset successfully! You can now log in with your new password.',[m
+[32m+[m[32m    });[m
+[32m+[m[32m  } catch (error) {[m
+[32m+[m[32m    console.error('ResetPassword error:', error);[m
+[32m+[m[32m    res.status(500).json({[m
+[32m+[m[32m      success: false,[m
+[32m+[m[32m      message: 'Failed to reset password. Please try again later.',[m
+[32m+[m[32m    });[m
+[32m+[m[32m  }[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mmodule.exports = { register, login, forgot
