@@ -58,7 +58,7 @@ export default function ForgotPassword() {
       }
 
       setIsOtpSent(true);
-      setOtpSentMessage("OTP sent! Check your email inbox (or server console in dev mode).");
+      setOtpSentMessage("OTP sent! Check your email inbox (Also check spam folder).");
     } catch (err) {
       setError("Unable to connect to server. Please try again later.");
     } finally {

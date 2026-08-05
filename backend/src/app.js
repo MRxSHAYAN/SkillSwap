@@ -5,6 +5,10 @@ const userRoutes = require('./routes/userRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const newsletterRoutes = require('./routes/newsletterRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const swapRoutes = require('./routes/swapRoutes');
+const skillsRoutes = require('./routes/skillsRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -51,6 +55,10 @@ app.use('/api/user', userRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/swaps', swapRoutes);
+app.use('/api/skills', skillsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Handle 404 for unknown routes
 app.use((req, res) => {

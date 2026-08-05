@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Menu,
@@ -10,19 +10,55 @@ import {
   Settings,
 } from "lucide-react";
 
+// Relative time helper
+function getTimeAgo(dateString) {
+  if (!dateString) return "";
+  const now = new Date();
+  const date = new Date(dateString);
+  const diff = now - date;
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days === 1) return "Yesterday";
+  return `${days}d ago`;
+}
+
 export default function DashboardNavbar({ setIsSidebarOpen }) {
   const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  // Use state so the navbar re-renders whenever localStorage is updated
-  // (e.g. after saving profile in Settings)
+  // Stored User profile
   const [storedUser, setStoredUser] = useState(() =>
     JSON.parse(localStorage.getItem("user") || "{}")
   );
 
-  // On mount: fetch fresh profile from API so avatar is always up to date
-  // (login/register responses now include avatarUrl, but this covers edge cases)
+  // Fetch notifications from API
+  const fetchNotifications = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch("/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setNotifications(json.data || []);
+        setUnreadCount(json.unreadCount || 0);
+      }
+    } catch (err) {
+      console.error("fetchNotifications error:", err);
+    }
+  }, []);
+
+  // Fetch profile on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -41,22 +77,27 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
           setStoredUser(merged);
         }
       })
-      .catch(() => {}); // silently ignore — navbar still works from localStorage
+      .catch(() => {});
   }, []);
 
-  // Re-sync from localStorage whenever the window regains focus or a
-  // custom "userUpdated" event is fired from Settings after a save
+  // Fetch notifications on mount and set up periodic refresh
   useEffect(() => {
-    const sync = () =>
+    fetchNotifications();
+
+    const interval = setInterval(fetchNotifications, 15000); // refresh every 15s
+
+    const syncUser = () =>
       setStoredUser(JSON.parse(localStorage.getItem("user") || "{}"));
 
-    window.addEventListener("focus", sync);
-    window.addEventListener("userUpdated", sync);
+    window.addEventListener("focus", fetchNotifications);
+    window.addEventListener("userUpdated", syncUser);
+
     return () => {
-      window.removeEventListener("focus", sync);
-      window.removeEventListener("userUpdated", sync);
+      clearInterval(interval);
+      window.removeEventListener("focus", fetchNotifications);
+      window.removeEventListener("userUpdated", syncUser);
     };
-  }, []);
+  }, [fetchNotifications]);
 
   const userName     = storedUser.fullName || "User";
   const userAvatar   = storedUser.avatarUrl || null;
@@ -73,29 +114,49 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
     navigate("/login", { replace: true });
   };
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "New Swap Request",
-      message: "Alex Rivera wants to exchange UI Design for React.",
-      time: "10m ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      title: "Session Confirmed",
-      message: "Sophia Chen accepted your session for tomorrow at 2:30 PM.",
-      time: "2h ago",
-      unread: true,
-    },
-    {
-      id: 3,
-      title: "New Review Received",
-      message: "Marcus Vance left you a 5-star review!",
-      time: "1d ago",
-      unread: false,
-    },
-  ]);
+  const markAllAsRead = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    // Optimistic UI update
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setUnreadCount(0);
+
+    try {
+      await fetch("/api/notifications/read-all", {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (err) {
+      console.error("markAllAsRead error:", err);
+    }
+  };
+
+  const handleNotificationClick = async (notif) => {
+    const token = localStorage.getItem("token");
+
+    if (!notif.read && token) {
+      // Optimistic update
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === notif._id ? { ...n, read: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+
+      try {
+        await fetch(`/api/notifications/${notif._id}/read`, {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch (err) {
+        console.error("handleNotificationClick error:", err);
+      }
+    }
+
+    setIsNotificationsOpen(false);
+    if (notif.link) {
+      navigate(notif.link);
+    }
+  };
 
   const notifRef = useRef(null);
   const profileRef = useRef(null);
@@ -112,12 +173,6 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const unreadCount = notifications.filter((n) => n.unread).length;
-
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
-  };
 
   return (
     <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
@@ -148,23 +203,29 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
         {/* Notifications Dropdown */}
         <div className="relative" ref={notifRef}>
           <button
-            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+            onClick={() => {
+              setIsNotificationsOpen(!isNotificationsOpen);
+              fetchNotifications();
+            }}
             className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 relative transition-colors cursor-pointer"
+            title="Notifications"
           >
             <Bell size={18} />
             {unreadCount > 0 && (
-              <span className="w-2.5 h-2.5 bg-blue-600 rounded-full absolute top-1.5 right-1.5 border-2 border-white" />
+              <span className="flex items-center justify-center min-w-[18px] h-4 px-1 bg-rose-500 text-white font-bold text-[10px] rounded-full absolute -top-1 -right-1 border-2 border-white shadow-xs animate-pulse">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
             )}
           </button>
 
           {isNotificationsOpen && (
-            <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl border border-slate-200 shadow-xl py-3 z-50">
+            <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl border border-slate-200 shadow-xl py-3 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="px-4 pb-2.5 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm font-bold text-slate-900">Notifications</h4>
                   {unreadCount > 0 && (
                     <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
-                      {unreadCount} new
+                      {unreadCount} unread
                     </span>
                   )}
                 </div>
@@ -181,29 +242,39 @@ export default function DashboardNavbar({ setIsSidebarOpen }) {
 
               <div className="max-h-80 overflow-y-auto divide-y divide-slate-50">
                 {notifications.length > 0 ? (
-                  notifications.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`p-3.5 hover:bg-slate-50 transition-colors flex items-start gap-3 cursor-pointer ${
-                        item.unread ? "bg-blue-50/40" : ""
-                      }`}
-                    >
-                      <div className="w-2 h-2 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <h5 className="text-xs font-bold text-slate-900 truncate">
-                            {item.title}
-                          </h5>
-                          <span className="text-[10px] text-slate-400 shrink-0">
-                            {item.time}
-                          </span>
+                  notifications.map((item) => {
+                    const isUnread = !item.read;
+                    const senderName = item.sender?.fullName || "System";
+
+                    return (
+                      <div
+                        key={item._id}
+                        onClick={() => handleNotificationClick(item)}
+                        className={`p-3.5 hover:bg-slate-50 transition-colors flex items-start gap-3 cursor-pointer ${
+                          isUnread ? "bg-blue-50/40" : ""
+                        }`}
+                      >
+                        <div
+                          className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                            isUnread ? "bg-blue-600" : "bg-transparent"
+                          }`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h5 className="text-xs font-bold text-slate-900 truncate">
+                              {item.type?.replace("_", " ")}
+                            </h5>
+                            <span className="text-[10px] text-slate-400 shrink-0">
+                              {getTimeAgo(item.createdAt)}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed line-clamp-2">
+                            {item.message}
+                          </p>
                         </div>
-                        <p className="text-xs text-slate-600 mt-0.5 leading-relaxed line-clamp-2">
-                          {item.message}
-                        </p>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="p-6 text-center text-xs text-slate-400">
                     No notifications yet.

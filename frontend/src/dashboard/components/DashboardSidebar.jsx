@@ -32,9 +32,9 @@ export default function DashboardSidebar({ isOpen, setIsOpen }) {
  const mainNavItems = [
   { name: "Overview", path: "/dashboard", icon: LayoutDashboard },
   { name: "New Swap", path: "/dashboard/new-swap", icon: PlusCircle },
+  { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
   { name: "Explore Skills", path: "/dashboard/explore", icon: Compass },
   { name: "Sessions", path: "/dashboard/sessions", icon: Calendar },
-  { name: "My Swaps", path: "/dashboard/swaps", icon: BookOpen },
   { name: "Matches", path: "/dashboard/matches", icon: Users },
   { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
   { name: "Credits & Rewards", path: "/dashboard/credits", icon: Zap },

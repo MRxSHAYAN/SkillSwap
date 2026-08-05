@@ -64,9 +64,11 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="new-swap" element={<NewSwap />} />
           <Route path="explore" element={<DashboardExploreSkills />} />
+          <Route path="explore-skills" element={<DashboardExploreSkills />} />
           <Route path="sessions" element={<Sessions />} />
           <Route path="room" element={<LiveRoom />} />
           <Route path="swaps" element={<MySwaps />} />
+          <Route path="my-swaps" element={<MySwaps />} />
           <Route path="matches" element={<Matches />} />
           <Route path="messages" element={<Messages />} />
           <Route path="credits" element={<Credits />} />
