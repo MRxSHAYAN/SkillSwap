@@ -8,7 +8,11 @@ const {
   getMyRequests,
   updateSwapStatus,
   completeSwap,
+  proposeSwap,
 } = require('../controllers/swapController');
+
+// POST /api/swaps/propose
+router.post('/propose', protect, proposeSwap);
 
 // POST /api/swaps/create
 router.post('/create', protect, createSwap);

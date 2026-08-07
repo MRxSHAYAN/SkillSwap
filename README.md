@@ -1,269 +1,223 @@
-# SkillSwap
+# SkillSwap - Peer-to-Peer Skill Exchange Platform
 
-**Trade skills, not money.** SkillSwap is a modern peer-to-peer skill exchange platform where creators and developers swap what they know for what they want to learn — no subscriptions, no paywalls, just direct 1-on-1 value exchange.
-
----
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
-![React](https://img.shields.io/badge/react-19.x-61dafb?logo=react)
-![Express](https://img.shields.io/badge/express-5.x-black?logo=express)
-![MongoDB](https://img.shields.io/badge/mongodb-mongoose%208.x-47a248?logo=mongodb)
-![Tailwind](https://img.shields.io/badge/tailwindcss-4.x-38bdf8?logo=tailwindcss)
-![Deployed on Vercel](https://img.shields.io/badge/deploy-vercel-black?logo=vercel)
+**SkillSwap** is a modern, full-stack web application designed for direct peer-to-peer skill exchanges. It connects creators, developers, designers, and learners to trade knowledge without financial transactions. Users can post skill offers, receive AI-powered match recommendations, propose custom swaps, schedule 1-on-1 video sessions, and manage real-time notifications.
 
 ---
 
-## Preview
+## 🚀 Core Features
 
-> **Screenshot / Demo**
-> _(Add a screenshot or screen recording of the live platform here)_
->
-> ```
-> [ Hero Page ]    [ Dashboard Home ]    [ Explore Skills ]    [ Settings ]
-> ```
-
----
-
-## Key Features
-
-- **Peer-to-Peer Skill Matching** — Browse and propose direct skill swaps with verified community members across 13+ domains including Development, Design, AI, Music, and more.
-- **Full User Dashboard** — Manage active swaps, sessions, matches, messages, credits, and a community leaderboard from a single interface.
-- **Live Session Room** — Browser-based video and screen sharing using the native WebRTC / MediaDevices API for real-time 1-on-1 sessions.
-- **JWT Authentication** — Secure register, login, and protected routes with JSON Web Tokens and bcrypt password hashing.
-- **Profile & Settings API** — Full account management: avatar upload (base64), username, bio, timezone, notification preferences, swap preferences, password change, and account deletion with IDOR protection.
-- **Community Reviews** — Submit peer ratings to MongoDB with a graceful demo-data fallback when the API is offline.
-- **Newsletter & Contact APIs** — Backend-integrated subscription and contact message endpoints with idempotency checks.
-- **Serverless-Ready Backend** — Express app wrapped as a Vercel serverless function with a mongoose connection cache for cold-start safety.
-- **Responsive Design** — Mobile-first layout with animated sidebar, Framer Motion page transitions, and a sticky category filter bar.
+- **Auth & Security**: Secure authentication featuring JWT tokens, bcrypt password hashing, login, registration, and 6-digit OTP password resets delivered via Nodemailer SMTP.
+- **Dynamic Dashboard**: Personalized user dashboard displaying real-time swap statistics, active exchanges, upcoming sessions, and recent community activity feed.
+- **Explore Skills**: Interactive catalog to search, filter, and discover skills across 13+ domains (Development, Design, Marketing, Business, AI, Languages, etc.).
+- **AI Suggested Matches**: Intelligent match engine comparing user profiles (`skillsOffered` vs. `skillsWanted`), returning dynamic match scores (e.g. 95% Match) and personalized rationale strings.
+- **My Swaps Management**: Tabbed interface to manage Received proposals, Sent requests, and Active confirmed skill exchanges.
+- **Session Scheduler & Live Room**: Track upcoming and past 1-on-1 learning sessions with WebRTC browser video call support.
+- **Real-Time Notifications**: Automated system notifications triggered for new swap proposals, proposal status updates (accepted/declined), and session updates.
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| **Framework** | React 19 + Vite 8 |
-| **Routing** | React Router DOM v7 |
-| **Styling** | Tailwind CSS v4 |
-| **Animations** | Framer Motion v12 |
-| **Icons** | Lucide React, React Icons |
-| **3D / Interactive** | Spline React |
-| **Backend** | Node.js + Express 5 |
-| **Database** | MongoDB via Mongoose 8 |
-| **Auth** | JSON Web Token + bcryptjs |
-| **Validation** | express-validator |
-| **File Uploads** | Multer (memory storage) |
-| **Deployment** | Vercel (frontend + backend serverless) |
-| **Linting** | oxlint |
+### Frontend
+- **Framework**: React 19 + Vite 8
+- **Routing**: React Router DOM v7
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React & React Icons
+- **Animations & 3D**: Framer Motion & Spline 3D
 
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js **v18+**
-- npm, pnpm, or yarn
-- A MongoDB connection string (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
-
-### Installation
-
-```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd SkillSwapp
-
-# 2. Install backend dependencies
-cd backend
-npm install
-
-# 3. Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-### Environment Variables
-
-Create a `.env` file in the `backend/` directory:
-
-```env
-PORT=5000
-MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/skillswap
-JWT_SECRET=your_jwt_secret_key_here
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:5173
-```
-
-### Running Locally
-
-Open two terminals:
-
-```bash
-# Terminal 1 — Backend (from /backend)
-npm run dev
-
-# Terminal 2 — Frontend (from /frontend)
-npm run dev
-```
-
-The frontend dev server proxies `/api/*` requests to the backend. Open [http://localhost:5173](http://localhost:5173) in your browser.
+### Backend
+- **Runtime**: Node.js
+- **Server Framework**: Express.js (v5)
+- **Database**: MongoDB & Mongoose ORM
+- **Authentication**: JSON Web Tokens (JWT) & bcryptjs
+- **Validation & File Handling**: express-validator & Multer
+- **Email Service**: Nodemailer (SMTP / Gmail)
 
 ---
 
-## Project Structure
+## 📁 Folder Structure
 
 ```
 SkillSwapp/
 ├── backend/
-│   ├── index.js                  # Vercel serverless entry point
-│   ├── server.js                 # Local dev server
-│   ├── vercel.json               # Vercel deployment config
-│   └── src/
-│       ├── app.js                # Express app (CORS, routes, error handling)
-│       ├── config/
-│       │   └── db.js             # Mongoose connection with serverless cache
-│       ├── controllers/
-│       │   ├── authController.js
-│       │   ├── userController.js
-│       │   ├── reviewController.js
-│       │   ├── contactController.js
-│       │   └── newsletterController.js
-│       ├── middleware/
-│       │   ├── authMiddleware.js  # JWT protect + role restriction
-│       │   ├── upload.js          # Multer memory storage
-│       │   └── validators.js      # express-validator rule sets
-│       ├── models/
-│       │   ├── User.js
-│       │   ├── Review.js
-│       │   ├── ContactMessage.js
-│       │   └── NewsletterSubscriber.js
-│       └── routes/
-│           ├── authRoutes.js
-│           ├── userRoutes.js
-│           ├── reviewRoutes.js
-│           ├── contactRoutes.js
-│           └── newsletterRoutes.js
+│   ├── src/
+│   │   ├── config/             # Database & server configurations
+│   │   ├── controllers/        # Express route controllers
+│   │   │   ├── authController.js
+│   │   │   ├── dashboardController.js
+│   │   │   ├── matchController.js
+│   │   │   ├── notificationController.js
+│   │   │   ├── reviewController.js
+│   │   │   ├── swapController.js
+│   │   │   └── userController.js
+│   │   ├── middleware/         # Auth JWT verification & validators
+│   │   ├── models/             # Mongoose schemas
+│   │   │   ├── ContactMessage.js
+│   │   │   ├── NewsletterSubscriber.js
+│   │   │   ├── Notification.js
+│   │   │   ├── Review.js
+│   │   │   ├── Swap.js
+│   │   │   └── User.js
+│   │   ├── routes/             # API route declarations
+│   │   │   ├── authRoutes.js
+│   │   │   ├── dashboardRoutes.js
+│   │   │   ├── matchRoutes.js
+│   │   │   ├── notificationRoutes.js
+│   │   │   ├── reviewRoutes.js
+│   │   │   ├── swapRoutes.js
+│   │   │   └── userRoutes.js
+│   │   ├── utils/              # Email transporter & helper functions
+│   │   └── app.js              # Express app setup & CORS configuration
+│   ├── server.js               # Entry point for backend server
+│   └── package.json
 │
-└── frontend/
-    ├── index.html
-    └── src/
-        ├── App.jsx                # Route definitions
-        ├── components/            # Navbar, Footer, ProtectedRoute, GuestRoute, ScrollToTop
-        ├── layouts/               # PublicLayout, DashboardLayout
-        ├── pages/
-        │   ├── Home.jsx
-        │   ├── About.jsx
-        │   ├── ExploreSkills.jsx
-        │   ├── Reviews.jsx
-        │   ├── Contact.jsx
-        │   └── Auth/              # Login, Register, ForgotPassword
-        └── dashboard/
-            ├── DashboardHome.jsx
-            ├── components/        # DashboardNavbar, DashboardSidebar, DashboardFooter
-            └── pages/             # 14 dashboard pages (Swaps, Sessions, LiveRoom, Settings, etc.)
+├── frontend/
+│   ├── src/
+│   │   ├── assets/             # Static images, icons, and logos
+│   │   ├── components/         # Reusable UI components (Navbar, Footer, Modals)
+│   │   ├── dashboard/          # Dashboard layout & pages
+│   │   │   ├── components/     # Dashboard Navbar, Sidebar, Stats
+│   │   │   └── pages/          # Dashboard views
+│   │   │       ├── DashboardExploreSkills.jsx
+│   │   │       ├── LiveRoom.jsx
+│   │   │       ├── Matches.jsx
+│   │   │       ├── Messages.jsx
+│   │   │       ├── MySwaps.jsx
+│   │   │       ├── NewSwap.jsx
+│   │   │       ├── ProfileSettings.jsx
+│   │   │       ├── PublicProfile.jsx
+│   │   │       ├── Settings.jsx
+│   │   │       ├── SwapDetails.jsx
+│   │   │       └── ViewAllNotifications.jsx
+│   │   ├── pages/              # Public marketing pages
+│   │   │   ├── About.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   ├── ExploreSkills.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Reviews.jsx
+│   │   │   └── Auth/           # Login, Register, ForgotPassword
+│   │   ├── App.jsx             # Main Router configuration
+│   │   └── main.jsx            # React root mount
+│   ├── package.json
+│   └── vite.config.js
+│
+├── README.md                   # Project documentation
+└── package.json
 ```
 
 ---
 
-## API Endpoints
+## ⚙️ Setup & Installation Instructions
 
-All API routes are prefixed with `/api`. Protected routes require an `Authorization: Bearer <token>` header.
-
-### Auth
-
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | Public | Register a new user |
-| `POST` | `/api/auth/login` | Public | Login and receive a JWT |
-
-### User / Settings
-
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/user/settings/me` | Private | Get authenticated user profile |
-| `PUT` | `/api/user/settings/me` | Private | Update profile (supports avatar upload via `multipart/form-data`) |
-| `PUT` | `/api/user/settings/me/password` | Private | Change password |
-| `PUT` | `/api/user/settings/me/prefs` | Private | Update notification and swap preferences |
-| `DELETE` | `/api/user/settings/me` | Private | Delete account (requires password confirmation) |
-
-### Reviews
-
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/reviews` | Public | Get all reviews with summary stats |
-| `POST` | `/api/reviews` | Private | Submit a new peer review |
-| `GET` | `/api/reviews/:id` | Public | Get a single review by ID |
-| `GET` | `/api/reviews/given/:userId` | Public | Get all reviews written by a user |
-| `PUT` | `/api/reviews/:id` | Private (owner) | Update a review |
-| `DELETE` | `/api/reviews/:id` | Private (owner/admin) | Delete a review |
-
-### Newsletter & Contact
-
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `POST` | `/api/newsletter/subscribe` | Public | Subscribe an email to the newsletter |
-| `POST` | `/api/contact` | Public | Submit a contact message |
-
-### Health Check
-
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `GET` | `/api/health` | Public | Verify the API is online |
+### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
+- **MongoDB**: Local MongoDB instance (`mongodb://localhost:27017/skillswap`) or a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
 
 ---
 
-## Deployment
+### Step 1: Clone the Repository
 
-The project is configured for [Vercel](https://vercel.com) out of the box.
-
-- **Frontend** — Deploy the `frontend/` directory as a Vite static site. Set the build command to `npm run build` and the output directory to `dist`.
-- **Backend** — Deploy the `backend/` directory as a serverless Node function. `vercel.json` is already configured to route all traffic through `index.js`.
-
-Set all environment variables from the [Environment Variables](#environment-variables) section in your Vercel project dashboard.
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a Pull Request against `main`
-
-Please keep PRs focused and scoped to a single feature or fix. Follow the existing code style — no new dependencies without discussion.
-
----
-
-## Known Limitations
-
-- **ForgotPassword flow** is UI-only (OTP simulation). A real backend route for OTP generation and email delivery has not been implemented yet.
-- **Avatar storage** uses base64 data URLs stored in MongoDB. For production scale, replace with S3 or Cloudinary.
-- **Dashboard data** (swaps, sessions, matches, messages, credits, leaderboard) uses static mock data. Full backend routes for these features are planned.
-
----
-
-## License
-
-This project is licensed under the **MIT License**.
-
+```bash
+git clone https://github.com/MRxSHAYAN/SkillSwap.git
+cd SkillSwapp
 ```
-MIT License
 
-Copyright (c) 2025 SkillSwap
+---
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+### Step 2: Install Dependencies
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+#### Install Backend Dependencies
+```bash
+cd backend
+npm install
 ```
+
+#### Install Frontend Dependencies
+```bash
+cd ../frontend
+npm install
+```
+
+---
+
+### Step 3: Configure Environment Variables
+
+Create a `.env` file inside the `backend/` directory:
+
+```env
+# Server Configuration
+PORT=5000
+FRONTEND_URL=http://localhost:5173
+
+# Database
+MONGO_URI=mongodb://localhost:27017/skillswap
+
+# Authentication
+JWT_SECRET=your_super_secret_jwt_key_here
+JWT_EXPIRES_IN=7d
+
+# Email Transporter (Nodemailer / Gmail SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_16_char_app_password
+EMAIL_FROM=SkillSwapp <your_email@gmail.com>
+```
+
+---
+
+### Step 4: Run Development Servers
+
+#### Terminal 1 — Start Backend Server
+```bash
+cd backend
+npm run dev
+```
+*(Server will start on `http://localhost:5000`)*
+
+#### Terminal 2 — Start Frontend Application
+```bash
+cd frontend
+npm run dev
+```
+*(Client will start on `http://localhost:5173`)*
+
+---
+
+## 📡 API Routes Reference Table
+
+| Category | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| **Auth** | `POST` | `/api/auth/register` | Public | Register a new user account |
+| **Auth** | `POST` | `/api/auth/login` | Public | Authenticate user & receive JWT token |
+| **Auth** | `POST` | `/api/auth/forgot-password` | Public | Send 6-digit OTP code to user email |
+| **Auth** | `POST` | `/api/auth/reset-password` | Public | Verify OTP & set new password |
+| **User Profile** | `GET` | `/api/user/settings/me` | Private | Get authenticated user profile |
+| **User Profile** | `PUT` | `/api/user/settings/me` | Private | Update profile details / avatar |
+| **User Profile** | `PUT` | `/api/user/settings/me/password` | Private | Change password |
+| **User Profile** | `PUT` | `/api/user/settings/me/prefs` | Private | Update notification & swap preferences |
+| **User Profile** | `DELETE` | `/api/user/settings/me` | Private | Permanently delete account |
+| **Dashboard** | `GET` | `/api/dashboard/stats` | Private | Fetch user dashboard metrics |
+| **Dashboard** | `GET` | `/api/dashboard/activity` | Private | Fetch recent swap activity feed |
+| **Matches** | `GET` | `/api/matches/ai-suggestions` | Private | Fetch AI match suggestions & scores |
+| **Swaps** | `POST` | `/api/swaps/propose` | Private | Propose a skill swap to a candidate |
+| **Swaps** | `POST` | `/api/swaps/create` | Private | Create an open skill swap offer |
+| **Swaps** | `GET` | `/api/swaps/mine` | Private | Fetch all user swaps |
+| **Swaps** | `GET` | `/api/swaps/my-requests` | Private | Fetch Received, Sent, and Active swaps |
+| **Swaps** | `PATCH` | `/api/swaps/:id/status` | Private | Accept or decline a swap proposal |
+| **Swaps** | `PATCH` | `/api/swaps/:id/complete` | Private | Mark an active swap as completed |
+| **Notifications**| `GET` | `/api/notifications` | Private | Fetch user notifications & unread count |
+| **Notifications**| `PATCH` | `/api/notifications/read-all` | Private | Mark all notifications as read |
+| **Notifications**| `PATCH` | `/api/notifications/:id/read` | Private | Mark single notification as read |
+| **Reviews** | `GET` | `/api/reviews` | Public | Fetch all community reviews |
+| **Reviews** | `POST` | `/api/reviews` | Private | Submit a review for a swap partner |
+| **Skills** | `GET` | `/api/skills` | Public | List available skill categories |
+| **Contact** | `POST` | `/api/contact` | Public | Submit contact support message |
+| **Newsletter** | `POST` | `/api/newsletter/subscribe` | Public | Subscribe email to newsletter |
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.

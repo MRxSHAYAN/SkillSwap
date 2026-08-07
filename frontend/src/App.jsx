@@ -23,7 +23,6 @@ import ProfileSettings from "./dashboard/pages/ProfileSettings";
 import Settings from "./dashboard/pages/Settings";
 import NewSwap from "./dashboard/pages/NewSwap";
 import DashboardExploreSkills from "./dashboard/pages/DashboardExploreSkills";
-import Sessions from "./dashboard/pages/Sessions";
 import LiveRoom from "./dashboard/pages/LiveRoom";
 import MySwaps from "./dashboard/pages/MySwaps";
 import Matches from "./dashboard/pages/Matches";
@@ -65,7 +64,6 @@ export default function App() {
           <Route path="new-swap" element={<NewSwap />} />
           <Route path="explore" element={<DashboardExploreSkills />} />
           <Route path="explore-skills" element={<DashboardExploreSkills />} />
-          <Route path="sessions" element={<Sessions />} />
           <Route path="room" element={<LiveRoom />} />
           <Route path="swaps" element={<MySwaps />} />
           <Route path="my-swaps" element={<MySwaps />} />

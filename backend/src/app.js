@@ -9,6 +9,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const swapRoutes = require('./routes/swapRoutes');
 const skillsRoutes = require('./routes/skillsRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const matchRoutes = require('./routes/matchRoutes');
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/skills', skillsRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/matches', matchRoutes);
 
 // Handle 404 for unknown routes
 app.use((req, res) => {

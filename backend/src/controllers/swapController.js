@@ -342,4 +342,107 @@ const completeSwap = async (req, res) => {
   }
 };
 
-module.exports = { createSwap, getMySwaps, getMyRequests, updateSwapStatus, completeSwap };
+/**
+ * @desc    Propose a skill swap to a specific user
+ * @route   POST /api/swaps/propose
+ * @access  Private (requires valid JWT)
+ */
+const proposeSwap = async (req, res) => {
+  try {
+    const { receiverId, offeredSkill, wantedSkill, note } = req.body;
+    const senderId = req.user._id;
+
+    if (!receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Receiver ID is required',
+      });
+    }
+
+    if (!offeredSkill || !offeredSkill.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Offered skill is required',
+      });
+    }
+
+    if (!wantedSkill || !wantedSkill.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Wanted skill is required',
+      });
+    }
+
+    if (senderId.toString() === receiverId.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot propose a skill swap to yourself',
+      });
+    }
+
+    const User = require('../models/User');
+    const receiverUser = await User.findById(receiverId);
+    if (!receiverUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Receiver user not found',
+      });
+    }
+
+    // Save swap proposal in Swaps collection
+    const swap = new Swap({
+      creator: senderId,
+      partner: receiverId,
+      offeredSkill: offeredSkill.trim(),
+      wantedSkill: wantedSkill.trim(),
+      description: note ? note.trim() : '',
+      status: 'pending',
+    });
+
+    await swap.save();
+    await swap.populate('creator', 'fullName avatarUrl skillsTeach email');
+    await swap.populate('partner', 'fullName avatarUrl skillsTeach email');
+
+    // Automatically create a Notification record for receiverId
+    const senderName = req.user.fullName || 'A member';
+    createNotificationAsync({
+      recipient: receiverId,
+      sender: senderId,
+      type: 'SWAP_REQUEST',
+      message: `${senderName} sent you a skill swap proposal: ${offeredSkill.trim()} ↔ ${wantedSkill.trim()}`,
+      link: '/dashboard/my-swaps',
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Swap proposal sent successfully!',
+      data: swap,
+    });
+  } catch (error) {
+    console.error('proposeSwap error:', error);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((e) => e.message);
+      return res.status(422).json({
+        success: false,
+        message: messages[0],
+        errors: messages,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while sending proposal',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createSwap,
+  getMySwaps,
+  getMyRequests,
+  updateSwapStatus,
+  completeSwap,
+  proposeSwap,
+};
+

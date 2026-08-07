@@ -38,7 +38,19 @@ const userSchema = new mongoose.Schema(
     },
     skillsTeach: {
       type: [String],
-      required: [true, 'At least one skill is required'],
+      default: [],
+    },
+    skillsOffered: {
+      type: [String],
+      default: [],
+    },
+    skillsWanted: {
+      type: [String],
+      default: [],
+    },
+    skillsLearn: {
+      type: [String],
+      default: [],
     },
     username: {
       type: String,
