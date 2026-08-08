@@ -108,7 +108,7 @@ SkillSwap/
 │   │   │   └── emailService.js
 │   │   └── app.js              # Express application setup & CORS
 │   ├── .env                    # Backend environment configuration
-│   ├── server.js               # Entry point for backend HTTP server
+│   ├── index.js               # Entry point for backend HTTP server
 │   └── package.json
 │
 ├── frontend/
