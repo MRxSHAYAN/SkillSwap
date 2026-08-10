@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiFetch } from "../../utils/apiFetch";
 import {
   Inbox,
   Send,
@@ -145,20 +146,13 @@ export default function MySwaps() {
     try {
       setLoading(true);
       setError(null);
-      const token = localStorage.getItem("token");
-      const res = await fetch("/api/swaps/my-requests", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to fetch swap data");
-      }
+      const json = await apiFetch("/api/swaps/my-requests");
       setActiveSwaps(json.activeSwaps || []);
       setReceivedRequests(json.receivedRequests || []);
       setSentRequests(json.sentRequests || []);
     } catch (err) {
-      console.error("fetchAll error:", err);
-      setError(err.message);
+      console.error("API Error:", err);
+      setError("Unable to fetch your swap requests. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -178,20 +172,10 @@ export default function MySwaps() {
         prev.map((r) => (r._id === swapId ? { ...r, status: newStatus } : r))
       );
 
-      const token = localStorage.getItem("token");
-      const res = await fetch(`/api/swaps/${swapId}/status`, {
+      const json = await apiFetch(`/api/swaps/${swapId}/status`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({ status: newStatus }),
       });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || `Failed to ${newStatus} swap`);
-      }
 
       if (newStatus === "accepted") {
         showToast("Proposal accepted! The swap is now ACTIVE.", "success");
@@ -203,8 +187,8 @@ export default function MySwaps() {
       // Full refresh to move cards between tabs
       fetchAll();
     } catch (err) {
-      console.error("handleStatusUpdate error:", err);
-      setError(err.message);
+      console.error("API Error:", err);
+      setError(`Unable to ${newStatus} swap proposal. Please try again later.`);
       fetchAll();
     } finally {
       setActionLoadingId(null);
@@ -222,20 +206,14 @@ export default function MySwaps() {
 
     try {
       setActionLoadingId(swapId);
-      const token = localStorage.getItem("token");
-      const res = await fetch(`/api/swaps/${swapId}/complete`, {
+      const json = await apiFetch(`/api/swaps/${swapId}/complete`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
       });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to complete swap");
-      }
       showToast("Swap completed! Credits earned. You can now submit a review.", "success");
       fetchAll();
     } catch (err) {
-      console.error("handleComplete error:", err);
-      setError(err.message);
+      console.error("API Error:", err);
+      setError("Unable to complete swap session. Please try again later.");
     } finally {
       setActionLoadingId(null);
     }

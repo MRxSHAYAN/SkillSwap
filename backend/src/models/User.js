@@ -92,6 +92,10 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    credits: {
+      type: Number,
+      default: 100,
+    },
     // Password reset fields
     resetOtp: {
       type: String,

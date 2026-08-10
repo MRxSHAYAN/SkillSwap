@@ -11,6 +11,7 @@ const skillsRoutes = require('./routes/skillsRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
+const creditRoutes = require('./routes/creditRoutes');
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.use('/api/skills', skillsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/credits', creditRoutes);
 
 // Handle 404 for unknown routes
 app.use((req, res) => {

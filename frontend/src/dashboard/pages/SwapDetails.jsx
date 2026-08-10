@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -175,13 +176,13 @@ export default function SwapDetails() {
 
               {/* Live Call Room Button (Active after accepting) */}
               {status === "Scheduled" ? (
-                <a
-                  href="/dashboard/room"
+                <Link
+                  to="/dashboard/room"
                   className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs shrink-0"
                 >
                   <Video size={16} />
                   <span>Join Live Room</span>
-                </a>
+                </Link>
               ) : (
                 <button
                   disabled
@@ -239,13 +240,13 @@ export default function SwapDetails() {
               <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-bold">
                 {swapData.partner.badge}
               </span>
-              <a
-                href="/dashboard/messages"
+              <Link
+                to="/dashboard/messages"
                 className="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors"
               >
                 <MessageSquare size={14} />
                 <span>Message</span>
-              </a>
+              </Link>
             </div>
           </div>
 

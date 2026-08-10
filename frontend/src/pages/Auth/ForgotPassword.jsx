@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   KeyRound,
   ArrowLeft,
@@ -464,27 +464,27 @@ export default function ForgotPassword() {
             <p className="text-xs sm:text-sm text-slate-500">
               Your password has been successfully updated. You can now log in with your new password.
             </p>
-            <a
-              href="/login"
+            <Link
+              to="/login"
               id="btn-go-to-login"
-              className="inline-block w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-md shadow-blue-500/20"
+              className="inline-block w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-md shadow-blue-500/20 text-center"
             >
               Sign In Now
-            </a>
+            </Link>
           </div>
         )}
 
         {/* Back to Login link */}
         {step !== 3 && (
           <div className="pt-4 border-t border-slate-100 text-center">
-            <a
-              href="/login"
+            <Link
+              to="/login"
               id="link-back-to-login"
               className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
             >
               <ArrowLeft size={13} />
               <span>Back to Sign In</span>
-            </a>
+            </Link>
           </div>
         )}
       </div>

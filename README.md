@@ -7,9 +7,9 @@
 
 ## 🌟 Project Overview & Features
 
-SkillSwap is an intuitive platform built to facilitate direct 1-on-1 skill trading. Users showcase the skills they can teach (`skillsOffered`) alongside the skills they want to master (`skillsWanted`). Through smart match suggestions, structured proposal workflows, session scheduling, and real-time alerts, SkillSwap fosters a collaborative learning ecosystem.
+SkillSwap is an intuitive platform built to facilitate direct 1-on-1 skill trading. Users showcase the skills they can teach (`skillsOffered`) alongside the skills they want to master (`skillsWanted`). Through smart match suggestions, structured proposal workflows, session scheduling, dynamic credit rewards, community leaderboards, and real-time alerts, SkillSwap fosters a collaborative learning ecosystem.
 
-### Core Features Summary
+### Core Features
 
 - 🔒 **Auth & Security**
   - Secure authentication using JSON Web Tokens (JWT) and `bcryptjs` password hashing.
@@ -17,7 +17,7 @@ SkillSwap is an intuitive platform built to facilitate direct 1-on-1 skill tradi
   - 6-digit OTP password reset workflow delivered via email using Nodemailer (SMTP).
 
 - 📊 **Dynamic Dashboard**
-  - Personalized control panel displaying real-time user statistics (active swaps, completed sessions, credits/SSP).
+  - Personalized control panel displaying real-time user statistics (active swaps, completed sessions, credits balance).
   - Active skill exchange overviews, upcoming session trackers, and live activity feeds.
 
 - 🔍 **Explore Skills**
@@ -28,11 +28,20 @@ SkillSwap is an intuitive platform built to facilitate direct 1-on-1 skill tradi
   - Smart skill matching engine based on complementary user wishlists (comparing `skillsOffered` vs. `skillsWanted`).
   - Calculates dynamic match percentages (e.g. 95% Match) and generates personalized match rationale summaries.
 
-- 🔄 **My Swaps Management**
+- 🔄 **My Swaps Management & Automatic Credit Settlement**
   - Tabbed interface to manage:
     - **Received Proposals**: Incoming swap offers from other members.
     - **Sent Requests**: Outgoing proposal tracking with status updates (`pending`, `accepted`, `rejected`).
     - **Active Swaps**: Ongoing confirmed exchanges with direct session links.
+  - **Completion Settlement**: Completing a swap transfers 10 Credits to the teacher and logs transaction history.
+
+- 🏆 **Dynamic Community Leaderboard**
+  - Real-time mentor rankings filterable by `weekly`, `monthly`, or `all time`.
+  - Calculates teaching hours, completed swaps, average reviews, top skills, and dynamic mentor badges ("Master Mentor", "Level 4 Mentor", "Growth Guru", "Rising Star").
+
+- 💳 **Credits & Rewards System**
+  - Integrated credit wallet (`GET /api/credits`).
+  - Live transaction history logging `EARNED` (+10) and `SPENT` (-10) credit events with partner details.
 
 - 📅 **Session Scheduler & Live Room**
   - Track upcoming and past 1-on-1 learning sessions with date/time scheduling.
@@ -52,6 +61,7 @@ SkillSwap is an intuitive platform built to facilitate direct 1-on-1 skill tradi
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) (v4)
 - **Icons & UI Assets**: [Lucide React](https://lucide.dev/) & [React Icons](https://react-icons.github.io/react-icons/)
 - **Animations & 3D**: [Framer Motion](https://www.framer.com/motion/) & Spline 3D (`@splinetool/react-spline`)
+- **API Handling**: Custom `apiFetch` utility with safe text parsing and status error mapping.
 
 ### Backend
 - **Runtime**: [Node.js](https://nodejs.org/)
@@ -74,7 +84,9 @@ SkillSwap/
 │   │   ├── controllers/        # Route logic & controller handlers
 │   │   │   ├── authController.js
 │   │   │   ├── contactController.js
+│   │   │   ├── creditController.js
 │   │   │   ├── dashboardController.js
+│   │   │   ├── leaderboardController.js
 │   │   │   ├── matchController.js
 │   │   │   ├── newsletterController.js
 │   │   │   ├── notificationController.js
@@ -88,6 +100,7 @@ SkillSwap/
 │   │   │   └── validators.js
 │   │   ├── models/             # Mongoose database models
 │   │   │   ├── ContactMessage.js
+│   │   │   ├── CreditTransaction.js
 │   │   │   ├── NewsletterSubscriber.js
 │   │   │   ├── Notification.js
 │   │   │   ├── Review.js
@@ -96,7 +109,9 @@ SkillSwap/
 │   │   ├── routes/             # API endpoint declarations
 │   │   │   ├── authRoutes.js
 │   │   │   ├── contactRoutes.js
+│   │   │   ├── creditRoutes.js
 │   │   │   ├── dashboardRoutes.js
+│   │   │   ├── leaderboardRoutes.js
 │   │   │   ├── matchRoutes.js
 │   │   │   ├── newsletterRoutes.js
 │   │   │   ├── notificationRoutes.js
@@ -104,202 +119,92 @@ SkillSwap/
 │   │   │   ├── skillsRoutes.js
 │   │   │   ├── swapRoutes.js
 │   │   │   └── userRoutes.js
-│   │   ├── utils/              # Email transporter & helper utilities
-│   │   │   └── emailService.js
-│   │   └── app.js              # Express application setup & CORS
-│   ├── .env                    # Backend environment configuration
-│   ├── index.js               # Entry point for backend HTTP server
+│   │   └── utils/              # Helper utilities & email senders
+│   │       ├── emailService.js
+│   │       └── jwt.js
+│   ├── app.js                  # Express app setup & middleware configuration
+│   ├── index.js                # HTTP Server listener & DB initializers
 │   └── package.json
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── assets/             # Graphics, logos, and static assets
-│   │   ├── components/         # Reusable public components (Navbar, Footer, Modals)
-│   │   │   ├── Footer.jsx
-│   │   │   ├── GuestRoute.jsx
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── ProtectedRoute.jsx
-│   │   │   └── ScrollToTop.jsx
-│   │   ├── dashboard/          # Authenticated user dashboard section
-│   │   │   ├── components/     # Dashboard Navigation & Sidebar
-│   │   │   │   ├── DashboardFooter.jsx
-│   │   │   │   ├── DashboardNavbar.jsx
-│   │   │   │   └── DashboardSidebar.jsx
-│   │   │   ├── pages/          # Dashboard features & session views
-│   │   │   │   ├── Credits.jsx
-│   │   │   │   ├── DashboardExploreSkills.jsx
-│   │   │   │   ├── LiveRoom.jsx
-│   │   │   │   ├── Matches.jsx
-│   │   │   │   ├── Messages.jsx
-│   │   │   │   ├── MySwaps.jsx
-│   │   │   │   ├── NewSwap.jsx
-│   │   │   │   ├── ProfileSettings.jsx
-│   │   │   │   ├── PublicProfile.jsx
-│   │   │   │   ├── SSPleaderboard.jsx
-│   │   │   │   ├── Settings.jsx
-│   │   │   │   ├── SwapDetails.jsx
-│   │   │   │   └── ViewAllNotifications.jsx
-│   │   │   └── DashboardHome.jsx
-│   │   ├── layouts/            # Page layout wrappers
-│   │   │   ├── DashboardLayout.jsx
-│   │   │   └── PublicLayout.jsx
-│   │   ├── pages/              # Public marketing pages & auth forms
-│   │   │   ├── About.jsx
-│   │   │   ├── Contact.jsx
-│   │   │   ├── ExploreSkills.jsx
-│   │   │   ├── Home.jsx
-│   │   │   ├── Reviews.jsx
-│   │   │   └── Auth/
-│   │   │       ├── ForgotPassword.jsx
-│   │   │       ├── Login.jsx
-│   │   │       └── Register.jsx
-│   │   ├── App.jsx             # Client route definitions
-│   │   └── main.jsx            # Application DOM mount
-│   ├── package.json
-│   └── vite.config.js
-│
-├── README.md                   # Comprehensive project documentation
-└── package.json                # Root monorepo script runner
+│   │   ├── components/         # Global shared components (Navbar, Footer, Modals)
+│   │   ├── dashboard/          # Protected dashboard environment
+│   │   │   ├── components/     # Sidebar, Header, Activity Widgets
+│   │   │   └── pages/          # Dashboard sub-views (MySwaps, Credits, SSPleaderboard, etc.)
+│   │   ├── utils/              # API fetch utility (apiFetch.js)
+│   │   ├── pages/              # Public pages (Landing, Auth, Explore, Profile)
+│   │   ├── App.jsx             # Main Router & Route Guards
+│   │   └── main.jsx            # Entry point
+│   └── package.json
+├── PROJECT_EXPLANATION.md     # Detailed architecture & workflow documentation
+└── README.md
 ```
 
 ---
 
-## ⚙️ Setup & Installation Instructions
+## ⚙️ Environment Variables
 
-Follow these step-by-step instructions to get a local development instance of **SkillSwap** running on your machine.
-
-### Prerequisites
-
-Ensure you have the following installed on your local machine:
-- **Node.js**: `v18.0.0` or higher
-- **npm**: `v9.0.0` or higher
-- **MongoDB**: Local MongoDB instance (`mongodb://localhost:27017/skillswap`) or a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) connection string.
-
----
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/MRxSHAYAN/SkillSwap.git
-cd SkillSwap
-```
-
----
-
-### Step 2: Install Dependencies
-
-#### Root Directory Dependencies (Concurrently Script Runner)
-```bash
-npm install
-```
-
-#### Backend Dependencies
-```bash
-cd backend
-npm install
-```
-
-#### Frontend Dependencies
-```bash
-cd ../frontend
-npm install
-```
-
----
-
-### Step 3: Set Up Environment Variables
-
-Create a `.env` file in the `backend/` directory:
+### Backend Setup (`backend/.env`)
 
 ```env
-# Server Port & CORS Frontend URL
 PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/skillswap?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRE=30d
 FRONTEND_URL=http://localhost:5173
 
-# MongoDB Connection String
-MONGO_URI=mongodb://localhost:27017/skillswap
-
-# JWT Secret Key & Expiration
-JWT_SECRET=your_super_secret_jwt_key_here
-JWT_EXPIRES_IN=7d
-
-# Nodemailer / Gmail SMTP Settings (For Forgot Password OTP Emails)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_16_character_app_password
-EMAIL_FROM=SkillSwap <your_email@gmail.com>
-```
-
-> 💡 **Note on Gmail SMTP Setup**:
-> 1. Enable 2-Step Verification on your Google Account: [Google Security Settings](https://myaccount.google.com/security).
-> 2. Generate an App Password: [Google App Passwords](https://myaccount.google.com/apppasswords).
-> 3. Enter your Gmail address in `SMTP_USER` and the generated 16-character code in `SMTP_PASS`.
-
----
-
-### Step 4: Run Development Servers
-
-You can start both frontend and backend servers simultaneously from the root directory, or start them individually.
-
-#### Option A: Concurrent Start (Root Directory)
-```bash
-# Run from project root
-npm run dev
-```
-
-#### Option B: Individual Terminal Start
-
-**Terminal 1 — Backend Server**
-```bash
-cd backend
-npm run dev
-# Server will listen on http://localhost:5000
-```
-
-**Terminal 2 — Frontend App**
-```bash
-cd frontend
-npm run dev
-# Vite client will run on http://localhost:5173
+# Nodemailer / SMTP Config (Optional for OTP Password Reset)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
 ```
 
 ---
 
-## 📡 API Routes Reference Table
+## 🚀 Installation & Local Running
 
-| Category | Method | Endpoint | Access | Description |
-|---|---|---|---|---|
-| **Auth** | `POST` | `/api/auth/register` | Public | Register a new user account |
-| **Auth** | `POST` | `/api/auth/login` | Public | Authenticate credentials & return JWT token |
-| **Auth** | `POST` | `/api/auth/forgot-password` | Public | Send 6-digit OTP code to user's registered email |
-| **Auth** | `POST` | `/api/auth/reset-password` | Public | Verify OTP code & reset password |
-| **Dashboard** | `GET` | `/api/dashboard/overview` | Private | Fetch user stats, active swaps, & activity feed |
-| **Matches** | `GET` | `/api/matches/ai-suggestions` | Private | Get AI-suggested complementary skill matches |
-| **Swaps & Proposals** | `POST` | `/api/swaps/propose` | Private | Propose a skill exchange to a target user |
-| **Swaps & Proposals** | `POST` | `/api/swaps/create` | Private | Create an open skill swap listing |
-| **Swaps & Proposals** | `GET` | `/api/swaps/mine` | Private | Fetch all swap listings created by authenticated user |
-| **Swaps & Proposals** | `GET` | `/api/swaps/my-requests` | Private | Retrieve Received, Sent, and Active swaps |
-| **Swaps & Proposals** | `PATCH` | `/api/swaps/:id/status` | Private | Accept or decline an incoming swap proposal |
-| **Swaps & Proposals** | `PATCH` | `/api/swaps/:id/complete` | Private | Mark an active skill swap as completed |
-| **Sessions** | `GET` | `/api/swaps/my-requests` | Private | Retrieve upcoming scheduled 1-on-1 sessions |
-| **Sessions** | `PATCH` | `/api/swaps/:id/status` | Private | Confirm session schedule & activate Live Room |
-| **Notifications** | `GET` | `/api/notifications` | Private | Fetch notifications list & unread count |
-| **Notifications** | `PATCH` | `/api/notifications/read-all` | Private | Mark all user notifications as read |
-| **Notifications** | `PATCH` | `/api/notifications/:id/read` | Private | Mark a specific notification as read |
-| **User Profile** | `GET` | `/api/user/settings/me` | Private | Fetch current user profile details |
-| **User Profile** | `PUT` | `/api/user/settings/me` | Private | Update profile bio, skills, & avatar image |
-| **User Profile** | `PUT` | `/api/user/settings/me/password` | Private | Change user account password |
-| **User Profile** | `PUT` | `/api/user/settings/me/prefs` | Private | Update notification & swap preferences |
-| **User Profile** | `DELETE` | `/api/user/settings/me` | Private | Permanently delete user account |
-| **Explore Skills** | `GET` | `/api/skills` | Private | Search and filter skills by name or category |
-| **Reviews** | `GET` | `/api/reviews` | Public | Get all community reviews |
-| **Reviews** | `POST` | `/api/reviews` | Private | Post a rating and review for a swap partner |
-| **Contact** | `POST` | `/api/contact` | Public | Submit support inquiry message |
-| **Newsletter** | `POST` | `/api/newsletter/subscribe` | Public | Subscribe email address to platform newsletter |
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/MRxSHAYAN/SkillSwap.git
+   cd SkillSwap
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   cd backend
+   npm install
+   # Configure backend/.env
+   npm run dev
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
+
+4. Open `http://localhost:5173` in your browser.
 
 ---
 
-## 📜 License
+## 🌐 Live API Endpoints Reference
 
-This project is open-source under the [MIT License](LICENSE).
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user account | No |
+| `POST` | `/api/auth/login` | Authenticate user & return JWT | No |
+| `GET` | `/api/user/profile` | Fetch logged-in user profile | Yes |
+| `PUT` | `/api/user/profile` | Update profile details & skills | Yes |
+| `GET` | `/api/dashboard/stats` | Retrieve user stats & upcoming sessions | Yes |
+| `GET` | `/api/matches` | Get dynamic AI match recommendations | Yes |
+| `GET` | `/api/swaps/my-requests` | Get active swaps, sent & received proposals | Yes |
+| `POST` | `/api/swaps` | Create a new swap proposal | Yes |
+| `PATCH` | `/api/swaps/:id/status` | Accept or decline a swap proposal | Yes |
+| `PATCH` | `/api/swaps/:id/complete` | Complete swap & settle 10 credits transfer | Yes |
+| `GET` | `/api/leaderboard` | Fetch mentor leaderboard (`?timeframe=weekly\|monthly\|all time`) | Yes |
+| `GET` | `/api/credits` | Fetch user credit balance & transaction history | Yes |
+| `GET` | `/api/notifications` | Fetch system notifications | Yes |

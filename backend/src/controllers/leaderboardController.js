@@ -10,18 +10,18 @@ const ReviewModel = require('../models/Review');
 const getLeaderboard = async (req, res) => {
   try {
     const { timeframe } = req.query;
-    const normalizedTimeframe = (timeframe || 'weekly').toString().trim().toLowerCase();
+    const rawTimeframe = (timeframe || 'weekly').toString().trim().toLowerCase();
 
     // Determine date threshold based on timeframe parameter
     let dateFilter = null;
     const now = new Date();
 
-    if (normalizedTimeframe === 'weekly') {
+    if (rawTimeframe === 'weekly') {
       dateFilter = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    } else if (normalizedTimeframe === 'monthly') {
+    } else if (rawTimeframe === 'monthly') {
       dateFilter = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     }
-    // 'all time' or anything else -> no date filter
+    // 'all time', 'all-time' or anything else -> no date filter
 
     // 1. Fetch completed swaps within the specified timeframe
     const swapQuery = { status: 'completed' };
@@ -56,7 +56,6 @@ const getLeaderboard = async (req, res) => {
       }
     });
 
-    // Helper to compute rating
     const getAverageRating = (userIdStr) => {
       const stats = userRatingMap.get(userIdStr);
       if (!stats || stats.count === 0) return 5.0;
@@ -85,7 +84,6 @@ const getLeaderboard = async (req, res) => {
           userSwapStats.set(partnerId, { hoursTaught: 0, swapsCompleted: 0 });
         }
         const partnerStats = userSwapStats.get(partnerId);
-        // Partner completed a swap session
         partnerStats.swapsCompleted += 1;
       }
     });
@@ -159,7 +157,7 @@ const getLeaderboard = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      timeframe: normalizedTimeframe,
+      timeframe: rawTimeframe,
       count: rankedMentors.length,
       data: rankedMentors,
     });

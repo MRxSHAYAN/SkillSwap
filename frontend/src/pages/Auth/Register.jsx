@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   User,
   Globe,
@@ -149,12 +149,12 @@ export default function RegisterPage() {
                 {emailExists && (
                   <>
                     {" "}
-                    <a
-                      href="/login"
+                    <Link
+                      to="/login"
                       className="underline underline-offset-2 font-semibold hover:text-red-800 transition-colors"
                     >
                       Sign in instead?
-                    </a>
+                    </Link>
                   </>
                 )}
               </span>
@@ -300,12 +300,12 @@ export default function RegisterPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <p className="text-xs text-slate-500">
               Already registered?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-4 ml-1 transition-colors"
               >
                 Sign in here
-              </a>
+              </Link>
             </p>
           </div>
         </div>
