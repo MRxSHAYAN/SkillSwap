@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Trophy,
   Star,
   Sparkles,
   Search,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 import { apiFetch } from "../../utils/apiFetch";
+
+/**
+ * Returns the best available avatar URL for a mentor.
+ * Prefers the real account image stored in MongoDB (avatarUrl -> avatar).
+ * Falls back to a generated initial-based avatar via UI Avatars if none exists
+ * or if the stored URL is broken (used in onError handlers too).
+ */
+function getAvatarUrl(mentor) {
+  const src = mentor?.avatar || mentor?.profilePicture || mentor?.avatarUrl;
+  if (src) return src;
+  const name = encodeURIComponent(mentor?.name || "User");
+  return `https://ui-avatars.com/api/?name=${name}&background=0D8ABC&color=fff`;
+}
 
 export default function SSPleaderboard() {
   const [timeframe, setTimeframe] = useState("weekly");
@@ -135,8 +147,9 @@ export default function SSPleaderboard() {
               <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-2xs flex flex-col items-center text-center space-y-3 order-2 md:order-1">
                 <div className="relative">
                   <img
-                    src={topThree[1].avatar}
+                    src={getAvatarUrl(topThree[1])}
                     alt={topThree[1].name}
+                    onError={(e) => { e.target.src = getAvatarUrl({ name: topThree[1].name }); }}
                     className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
                   />
                   <span className="absolute -bottom-1 -right-1 bg-slate-200 text-slate-800 text-xs font-extrabold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
@@ -176,8 +189,9 @@ export default function SSPleaderboard() {
                 </div>
                 <div className="relative pt-2">
                   <img
-                    src={topThree[0].avatar}
+                    src={getAvatarUrl(topThree[0])}
                     alt={topThree[0].name}
+                    onError={(e) => { e.target.src = getAvatarUrl({ name: topThree[0].name }); }}
                     className="w-20 h-20 rounded-full object-cover border-4 border-amber-400"
                   />
                   <span className="absolute -bottom-1 -right-1 bg-amber-400 text-amber-950 text-xs font-extrabold w-7 h-7 rounded-full flex items-center justify-center border-2 border-white">
@@ -212,8 +226,9 @@ export default function SSPleaderboard() {
               <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-2xs flex flex-col items-center text-center space-y-3 order-3">
                 <div className="relative">
                   <img
-                    src={topThree[2].avatar}
+                    src={getAvatarUrl(topThree[2])}
                     alt={topThree[2].name}
+                    onError={(e) => { e.target.src = getAvatarUrl({ name: topThree[2].name }); }}
                     className="w-16 h-16 rounded-full object-cover border-2 border-amber-700/30"
                   />
                   <span className="absolute -bottom-1 -right-1 bg-amber-700/80 text-white text-xs font-extrabold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
@@ -283,8 +298,9 @@ export default function SSPleaderboard() {
                         #{mentor.rank}
                       </span>
                       <img
-                        src={mentor.avatar}
+                        src={getAvatarUrl(mentor)}
                         alt={mentor.name}
+                        onError={(e) => { e.target.src = getAvatarUrl({ name: mentor.name }); }}
                         className="w-10 h-10 rounded-full object-cover border border-slate-200"
                       />
                       <div>

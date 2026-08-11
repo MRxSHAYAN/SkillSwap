@@ -88,17 +88,8 @@ const getLeaderboard = async (req, res) => {
       }
     });
 
-    // Default fallback avatars if user hasn't set one
-    const defaultAvatars = [
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    ];
-
     // Build mentor list
-    const mentors = users.map((user, index) => {
+    const mentors = users.map((user) => {
       const uIdStr = user._id.toString();
       const stats = userSwapStats.get(uIdStr) || { hoursTaught: 0, swapsCompleted: 0 };
       const hoursTaught = Number(stats.hoursTaught.toFixed(1));
@@ -125,8 +116,9 @@ const getLeaderboard = async (req, res) => {
         ? `${user.skillsTeach[0]} Specialist`
         : 'Skill Mentor';
 
-      const avatar =
-        user.avatarUrl || defaultAvatars[index % defaultAvatars.length];
+      // Return the real avatarUrl from the user's account, or null so the
+      // frontend can render a clean initial-based fallback instead.
+      const avatar = user.avatarUrl || null;
 
       return {
         id: uIdStr,
