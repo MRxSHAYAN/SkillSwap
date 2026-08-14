@@ -10,14 +10,12 @@
     }
   },
   "rewrites": [
-  //  {
+    {
       "source": "/api/(.*)",
       "destination": {
         "service": "backend"
       }
-  //  }
-
-,
+  },
     {
       "source": "/(.*)",
       "destination": {
