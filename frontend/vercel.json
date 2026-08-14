@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://skillswapofficial.vercel.app/api/:path*"
+      "destination": "https://MariyamNazzDevOP/api/:path*"
     },
     {
       "source": "/(.*)",
