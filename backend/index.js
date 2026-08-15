@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 
   connectDB()
     .then(() => {
-      app.listen(PORT, () => {
+      app.listen(PORT, '0.0.0.0' ,() => {
         console.log(`\n SkillSwapp Local Server Running`);
         console.log(`   ├─ Port:    ${PORT}`);
         console.log(`   ├─ Mode:    ${process.env.NODE_ENV || 'development'}`);
