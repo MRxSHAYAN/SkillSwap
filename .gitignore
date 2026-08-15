@@ -66,4 +66,9 @@ HOW_IT_WORKS.txt
 REVIEWS_EXPLANATION.txt
 FORGOT_PASSWORD_HOW_IT_WORKS.txt
 NOTIFICATION_SYSTEM_EXPLANATION.txt
-MATCHES_AND_SWAP_PROPOSALS_HOW_IT_WORKS.txt
+MATCHES_AND_SWAP_PROPOSALS_HOW_IT_WORKS.
+
+{
+      "source": "/api/:path*",
+      "destination": "https://MariyamNazzDevOP/api/:path*"
+    },
