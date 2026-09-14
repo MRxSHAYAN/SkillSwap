@@ -15,7 +15,7 @@ const getCredits = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const credits = user.credits ?? 100;
+    const credits = user.credits ?? 50;
 
     const transactions = await CreditTransaction.find({ userId })
       .sort({ createdAt: -1 })

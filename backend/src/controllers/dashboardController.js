@@ -49,7 +49,7 @@ const getDashboardOverview = async (req, res) => {
       averageRating = Number((sum / reviews.length).toFixed(1));
     }
 
-    const totalCredits = 100 + swapsCompleted * 10;
+    const totalCredits = 50 + swapsCompleted * 50;
 
     const stats = {
       totalCredits,

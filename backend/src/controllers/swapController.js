@@ -313,27 +313,27 @@ const completeSwap = async (req, res) => {
     await swap.populate('creator', 'fullName avatarUrl skillsTeach email');
     await swap.populate('partner', 'fullName avatarUrl skillsTeach email');
 
-    // Credit settlement: Teacher (creator) gets +10 credits, Student (partner) spends -10 credits
+    // Credit settlement: Teacher (creator) earns +50 credits, Student (partner) spends -50 credits
     const creatorName = swap.creator?.fullName || 'Teacher';
     const partnerName = swap.partner?.fullName || 'Student';
 
     if (swap.creator?._id) {
-      await User.findByIdAndUpdate(swap.creator._id, { $inc: { credits: 10 } });
+      await User.findByIdAndUpdate(swap.creator._id, { $inc: { credits: 50 } });
       await CreditTransaction.create({
         userId: swap.creator._id,
         type: 'EARNED',
-        amount: 10,
+        amount: 50,
         description: `Taught ${swap.offeredSkill || 'skill'}`,
         partnerName: partnerName,
       });
     }
 
     if (swap.partner?._id) {
-      await User.findByIdAndUpdate(swap.partner._id, { $inc: { credits: -10 } });
+      await User.findByIdAndUpdate(swap.partner._id, { $inc: { credits: -50 } });
       await CreditTransaction.create({
         userId: swap.partner._id,
         type: 'SPENT',
-        amount: 10,
+        amount: 50,
         description: `Learned ${swap.wantedSkill || swap.offeredSkill || 'skill'}`,
         partnerName: creatorName,
       });

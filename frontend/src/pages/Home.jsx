@@ -20,32 +20,9 @@ import {
   Repeat,
   Star,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 
 export default function Home() {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const activeMatches = [
-    {
-      id: 1,
-      user: "Elena R.",
-      offered: "React & Next.js",
-      offeredIcon: Code2,
-      wanted: "Figma UI/UX",
-      wantedIcon: Palette,
-      score: "99%",
-    },
-    {
-      id: 2,
-      user: "Marcus K.",
-      offered: "Python & PyTorch",
-      offeredIcon: Cpu,
-      wanted: "Motion Graphics",
-      wantedIcon: Video,
-      score: "95%",
-    },
-  ];
 
   const stats = [
     {
@@ -240,154 +217,143 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Right Side  */}
+            {/* Right Side */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
               className="lg:col-span-5 relative w-full select-none"
             >
-              <motion.div
-                animate={{
-                  y: isHovered ? -4 : [0, -6, 0],
-                }}
-                transition={{
-                  y: isHovered
-                    ? { duration: 0.3, ease: "easeOut" }
-                    : { duration: 6, repeat: Infinity, ease: "easeInOut" },
-                }}
-                className="relative rounded-3xl border border-white/15 bg-zinc-950/80 p-6 sm:p-7 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
-              >
-                <div className="relative z-10 flex items-center justify-between pb-5 border-b border-white/10">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex gap-1.5">
-                      <span className="w-3 h-3 rounded-full bg-zinc-800 border border-white/10" />
-                      <span className="w-3 h-3 rounded-full bg-zinc-800 border border-white/10" />
-                      <span className="w-3 h-3 rounded-full bg-zinc-800 border border-white/10" />
-                    </div>
-                    <span className="text-xs font-mono text-zinc-400 pl-2 border-l border-white/10">
-                      engine/match-v2.0
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Active Swapping</span>
-                  </div>
+              {/* Swap in progress card */}
+              <div className="rounded-2xl bg-zinc-900 border border-white/10 overflow-hidden shadow-2xl">
+                {/* Card header */}
+                <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-white">Active Swap</span>
+                  <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Live
+                  </span>
                 </div>
 
-                {/* Match Cards */}
-                <div className="relative z-10 mt-6 space-y-4">
-                  <div className="flex items-center justify-between text-xs text-zinc-400 font-mono">
-                    <span>SUGGESTED PAIRS</span>
-                    <span className="flex items-center gap-1 text-blue-400">
-                      <Sparkles size={12} /> Live Overlap
-                    </span>
-                  </div>
-
-                  <div className="space-y-3">
-                    {activeMatches.map((item, index) => {
-                      const OfferedIcon = item.offeredIcon;
-                      const WantedIcon = item.wantedIcon;
-                      return (
-                        <motion.div
-                          key={item.id}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{
-                            delay: 0.2 + index * 0.1,
-                            duration: 0.4,
-                          }}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                          className="group relative p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-blue-500/40 hover:bg-white/[0.06] transition-all duration-300 cursor-pointer"
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold text-white font-sans">
-                                {item.user}
-                              </span>
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                                Score: {item.score}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-zinc-400 group-hover:text-blue-400 flex items-center gap-1 transition-colors">
-                              Propose Swap <ArrowUpRight size={13} />
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2 text-xs">
-                            <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-white/5 flex items-center gap-2">
-                              <OfferedIcon
-                                size={14}
-                                className="text-blue-400 shrink-0"
-                              />
-                              <div className="truncate">
-                                <p className="text-[9px] text-zinc-500 font-mono uppercase">
-                                  Teaches
-                                </p>
-                                <p className="font-semibold text-zinc-200 truncate">
-                                  {item.offered}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-white/5 flex items-center gap-2">
-                              <WantedIcon
-                                size={14}
-                                className="text-purple-400 shrink-0"
-                              />
-                              <div className="truncate">
-                                <p className="text-[9px] text-zinc-500 font-mono uppercase">
-                                  Wants
-                                </p>
-                                <p className="font-semibold text-zinc-200 truncate">
-                                  {item.wanted}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Status Notification */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-zinc-900/50 border border-blue-500/30 flex items-center justify-between text-xs"
-                  >
+                {/* Two user profiles side by side */}
+                <div className="p-5 grid grid-cols-2 gap-3">
+                  {/* User A */}
+                  <div className="bg-zinc-800/60 rounded-xl p-4 border border-white/[0.07] flex flex-col gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-blue-400">
-                        <Zap size={15} />
+                      <div className="w-9 h-9 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm shrink-0">
+                        E
                       </div>
                       <div>
-                        <p className="font-semibold text-white text-[12px]">
-                          Zero Cash Transaction
-                        </p>
-                        <p className="text-[10px] text-zinc-400">
-                          1 Hour Given = 1 Hour Learned
-                        </p>
+                        <p className="text-sm font-semibold text-white leading-tight">Elena R.</p>
+                        <p className="text-[11px] text-zinc-500">Berlin, DE</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                      <CheckCircle2 size={13} /> Verified
+                    <div>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Teaching</p>
+                      <div className="flex items-center gap-1.5">
+                        <Code2 size={13} className="text-blue-400 shrink-0" />
+                        <span className="text-xs font-medium text-zinc-200">React & Next.js</span>
+                      </div>
                     </div>
-                  </motion.div>
+                    <div>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Learning</p>
+                      <div className="flex items-center gap-1.5">
+                        <Palette size={13} className="text-purple-400 shrink-0" />
+                        <span className="text-xs font-medium text-zinc-200">Figma UI/UX</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* User B */}
+                  <div className="bg-zinc-800/60 rounded-xl p-4 border border-white/[0.07] flex flex-col gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm shrink-0">
+                        M
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white leading-tight">Marcus K.</p>
+                        <p className="text-[11px] text-zinc-500">Lagos, NG</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Teaching</p>
+                      <div className="flex items-center gap-1.5">
+                        <Palette size={13} className="text-purple-400 shrink-0" />
+                        <span className="text-xs font-medium text-zinc-200">Figma UI/UX</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Learning</p>
+                      <div className="flex items-center gap-1.5">
+                        <Code2 size={13} className="text-blue-400 shrink-0" />
+                        <span className="text-xs font-medium text-zinc-200">React & Next.js</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Footer Tag */}
-                <div className="relative z-10 mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-zinc-400">
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck size={14} className="text-blue-400" /> Peer
-                    Exchange Protocol
-                  </span>
-                  <span className="text-zinc-500">[ SkillSwap v1.0 ]</span>
+                {/* Session progress */}
+                <div className="px-5 pb-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs text-zinc-400">
+                    <span>Session progress</span>
+                    <span className="text-white font-medium">45 / 60 min</span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-zinc-800">
+                    <motion.div
+                      className="h-full rounded-full bg-blue-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: "75%" }}
+                      transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                    />
+                  </div>
                 </div>
-              </motion.div>
+
+                {/* Divider */}
+                <div className="border-t border-white/8" />
+
+                {/* Pending requests */}
+                <div className="px-5 py-4">
+                  <p className="text-xs text-zinc-500 uppercase tracking-wide mb-3">People looking to swap</p>
+                  <div className="space-y-2">
+                    {[
+                      { name: "Aisha T.", offers: "Python", wants: "Video Editing", avatar: "A", color: "text-amber-400 bg-amber-500/20 border-amber-500/30" },
+                      { name: "Luca B.", offers: "3D Blender", wants: "SEO & Growth", avatar: "L", color: "text-emerald-400 bg-emerald-500/20 border-emerald-500/30" },
+                    ].map((p, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 + i * 0.12, duration: 0.35 }}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 ${p.color}`}>
+                            {p.avatar}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-zinc-200">{p.name}</p>
+                            <p className="text-[11px] text-zinc-500">{p.offers} ↔ {p.wants}</p>
+                          </div>
+                        </div>
+                        <Link
+                          to="/register"
+                          className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-0.5"
+                        >
+                          Connect <ArrowUpRight size={11} />
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bottom strip */}
+                <div className="border-t border-white/8 px-5 py-3 flex items-center justify-between">
+                  <span className="text-xs text-zinc-500">No money exchanged — ever.</span>
+                  <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1">
+                    <CheckCircle2 size={12} className="text-emerald-400" /> Free to join
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -627,7 +593,7 @@ export default function Home() {
 
                   <button
                     type="submit"
-                    className="px-7 py-3.5 rounded-2xl bg-blue-500 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md hover:shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group shrink-0 active:scale-95"
+                    className="px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md hover:shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 group shrink-0 active:scale-95"
                   >
                     <span>Subscribe</span>
                     <ArrowRight

@@ -14,13 +14,23 @@ import {
   AlertCircle,
   Globe,
   Clock,
+  Zap,
+  Wallet,
+  Flame,
+  Shield,
 } from "lucide-react";
+import { apiFetch } from "../../utils/apiFetch";
+import { getTier } from "./Credits";
 
 export default function PublicProfile() {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading]  = useState(true);
-  const [error, setError]      = useState("");
+  const [profile, setProfile]       = useState(null);
+  const [credits, setCredits]       = useState(null);
+  const [totalEarned, setTotalEarned] = useState(0);
+  const [loading, setLoading]       = useState(true);
+  const [creditsLoading, setCreditsLoading] = useState(true);
+  const [error, setError]           = useState("");
 
+  // ── Fetch profile ──────────────────────────────────────────────────────────
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -29,12 +39,10 @@ export default function PublicProfile() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-
         if (!res.ok) {
           setError(data.message || "Failed to load profile.");
           return;
         }
-
         setProfile(data.user);
       } catch {
         setError("Unable to connect to server.");
@@ -42,11 +50,29 @@ export default function PublicProfile() {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, []);
 
-  // ── Loading ──────────────────────────────────────────────────────────────
+  // ── Fetch credits ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    const fetchCredits = async () => {
+      try {
+        const data = await apiFetch("/api/credits");
+        setCredits(data.credits ?? 0);
+        const earned = (data.transactions || [])
+          .filter((t) => t.type === "EARNED")
+          .reduce((s, t) => s + t.amount, 0);
+        setTotalEarned(earned);
+      } catch {
+        setCredits(0);
+      } finally {
+        setCreditsLoading(false);
+      }
+    };
+    fetchCredits();
+  }, []);
+
+  // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="max-w-5xl mx-auto flex items-center justify-center py-32">
@@ -55,7 +81,7 @@ export default function PublicProfile() {
     );
   }
 
-  // ── Error ────────────────────────────────────────────────────────────────
+  // ── Error ──────────────────────────────────────────────────────────────────
   if (error) {
     return (
       <div className="max-w-5xl mx-auto py-16 flex flex-col items-center gap-3 text-center">
@@ -65,38 +91,50 @@ export default function PublicProfile() {
     );
   }
 
-  // ── Derived display values ───────────────────────────────────────────────
+  // ── Derived values ─────────────────────────────────────────────────────────
   const joinedDate = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString("en-US", {
         month: "long",
-        year:  "numeric",
+        year: "numeric",
       })
     : "—";
 
   const skillsTeach = Array.isArray(profile.skillsTeach) ? profile.skillsTeach : [];
   const languages   = Array.isArray(profile.languages)   ? profile.languages   : [];
 
-  // Placeholder stats (real data requires swap/session features)
+  const tier       = getTier(totalEarned);
+  const TierIcon   = tier.icon;
+
+  // Tier icon map for inline use without importing everything
+  const tierIconMap = { BookOpen, Zap, Flame, Award, Star };
+
   const stats = [
-    { label: "Swaps Completed", value: "—"  },
-    { label: "Hours Taught",    value: "—"  },
-    { label: "Mentor Rating",   value: "—", isRating: true },
-    { label: "Reviews",         value: "—"  },
+    { label: "Swaps Completed", value: "—" },
+    { label: "Hours Taught",    value: "—" },
+    {
+      label: "Mentor Rating",
+      value: "—",
+      isRating: true,
+    },
+    { label: "Reviews",         value: "—" },
+    {
+      label: "Credits",
+      value: creditsLoading ? null : String(credits),
+      isCredits: true,
+    },
   ];
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-12">
 
-      {/* ── Top Banner Card ─────────────────────────────────────────────── */}
+      {/* ── Top Banner Card ──────────────────────────────────────────────────── */}
       <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm">
-        {/* Cover gradient */}
-        <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-900" />
+        {/* Cover */}
+        <div className="h-32 bg-gradient-to-r from-blue-600 to-slate-900" />
 
         <div className="px-6 pb-6 relative">
-          {/* Avatar + actions row */}
+          {/* Avatar + actions */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 mb-4">
-
-            {/* Avatar */}
             <div className="w-28 h-28 rounded-2xl ring-4 ring-white shadow-md bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-slate-400">
               {profile.avatarUrl ? (
                 <img
@@ -109,7 +147,6 @@ export default function PublicProfile() {
               )}
             </div>
 
-            {/* Action buttons */}
             <div className="flex items-center gap-3">
               <Link
                 to="/dashboard/settings"
@@ -134,16 +171,23 @@ export default function PublicProfile() {
               <h1 className="text-2xl font-extrabold text-slate-900">
                 {profile.fullName}
               </h1>
+
+              {/* Verified badge */}
               <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold flex items-center gap-1 border border-blue-100">
                 <CheckCircle2 size={13} /> Verified Mentor
               </span>
+
+              {/* Tier badge */}
+              {!creditsLoading && (
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1 border ${tier.pill}`}>
+                  <TierIcon size={12} />
+                  {tier.name}
+                </span>
+              )}
             </div>
 
-            {/* Username */}
             {profile.username && (
-              <p className="text-sm font-semibold text-slate-500">
-                @{profile.username}
-              </p>
+              <p className="text-sm font-semibold text-slate-500">@{profile.username}</p>
             )}
 
             <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1">
@@ -180,7 +224,10 @@ export default function PublicProfile() {
           ) : (
             <p className="mt-4 text-xs text-slate-400 italic">
               No bio yet.{" "}
-              <Link to="/dashboard/settings" className="text-blue-500 hover:underline not-italic font-semibold">
+              <Link
+                to="/dashboard/settings"
+                className="text-blue-500 hover:underline not-italic font-semibold"
+              >
                 Add one in Settings →
               </Link>
             </p>
@@ -188,22 +235,77 @@ export default function PublicProfile() {
         </div>
       </div>
 
-      {/* ── Stats ───────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* ── Stats Row ────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {stats.map((s, i) => (
-          <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center">
-            <p className="text-2xl font-black text-slate-900 flex items-center justify-center gap-1">
-              {s.isRating && <Star size={18} className="text-amber-400 fill-amber-400" />}
-              {s.value}
+          <div
+            key={i}
+            className={`bg-white p-4 rounded-2xl border shadow-sm text-center transition-all ${
+              s.isCredits
+                ? "border-blue-200 bg-blue-50/40"
+                : "border-slate-200/80"
+            }`}
+          >
+            {s.isCredits && (
+              <div className="flex justify-center mb-1.5">
+                <Wallet size={14} className="text-blue-600" />
+              </div>
+            )}
+            {s.isRating && !s.isCredits && (
+              <div className="flex justify-center mb-1.5">
+                <Star size={14} className="text-amber-400 fill-amber-400" />
+              </div>
+            )}
+
+            {s.isCredits && creditsLoading ? (
+              <div className="h-7 w-12 bg-blue-100 rounded-lg animate-pulse mx-auto mb-1" />
+            ) : (
+              <p className={`text-2xl font-black tracking-tight ${s.isCredits ? "text-blue-700" : "text-slate-900"}`}>
+                {s.value}
+              </p>
+            )}
+
+            <p className={`text-[11px] font-medium mt-0.5 ${s.isCredits ? "text-blue-500" : "text-slate-500"}`}>
+              {s.label}
             </p>
-            <p className="text-xs font-medium text-slate-500 mt-0.5">{s.label}</p>
+
+            {/* Tier indicator under credits */}
+            {s.isCredits && !creditsLoading && (
+              <div className={`mt-1.5 text-[10px] font-bold flex items-center justify-center gap-1 ${tier.color}`}>
+                <TierIcon size={10} />
+                {tier.name}
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      {/* ── Skills Grid ─────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* ── Credit summary strip ─────────────────────────────────────────────── */}
+      {!creditsLoading && (
+        <div className={`rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${tier.bg} ${tier.border}`}>
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl ${tier.bg} border ${tier.border} flex items-center justify-center shrink-0`}>
+              <TierIcon size={18} className={tier.color} />
+            </div>
+            <div>
+              <p className={`text-sm font-extrabold ${tier.color}`}>{tier.name} Tier</p>
+              <p className="text-[11px] text-slate-500">
+                {totalEarned} credits earned · {credits} available
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/dashboard/credits"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors shadow-sm"
+          >
+            <Shield size={13} />
+            View Full Credits
+          </Link>
+        </div>
+      )}
 
+      {/* ── Skills Grid ──────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Skills to teach */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -224,7 +326,10 @@ export default function PublicProfile() {
           ) : (
             <p className="text-xs text-slate-400 italic">
               No skills added yet.{" "}
-              <Link to="/dashboard/settings" className="text-blue-500 hover:underline not-italic font-semibold">
+              <Link
+                to="/dashboard/settings"
+                className="text-blue-500 hover:underline not-italic font-semibold"
+              >
                 Add in Settings →
               </Link>
             </p>

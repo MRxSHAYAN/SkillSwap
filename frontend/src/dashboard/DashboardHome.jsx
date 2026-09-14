@@ -232,13 +232,13 @@ export default function DashboardHome() {
               {loading ? (
                 <span className="w-20 h-3 bg-blue-400/30 rounded animate-pulse inline-block" />
               ) : (
-                <span>{stats?.totalCredits ?? 100} Credits Available</span>
+                <span>{stats?.totalCredits ?? 50} Credits Available</span>
               )}
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
               Ready for your next{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400">
                 Skill Swap?
               </span>
             </h1>

@@ -92,7 +92,7 @@ export default function Navbar() {
 
             <Link
               to="/register"
-              className="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700 transition-all shadow-md flex items-center gap-1.5 active:scale-95"
+              className="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-md flex items-center gap-1.5 active:scale-95"
             >
               <Sparkles size={14} className="text-purple-200" />
               <span>Get Started</span>

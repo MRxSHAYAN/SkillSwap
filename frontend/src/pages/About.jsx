@@ -149,7 +149,7 @@ export default function AboutUs() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-sky-50/60 border border-sky-100 p-8 rounded-3xl hover:border-sky-200 transition-colors shadow-sm"
+                  className="bg-blue-50/60 border border-blue-100 p-8 rounded-3xl hover:border-blue-200 transition-colors shadow-sm"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-6 shadow-md shadow-blue-500/20">
                     <Icon size={24} />

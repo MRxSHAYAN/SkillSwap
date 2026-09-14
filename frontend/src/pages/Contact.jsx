@@ -88,7 +88,7 @@ export default function ContactUs() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
       {/* Light Blue Ambient Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-blue-400/10 via-sky-300/20 to-transparent blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-blue-400/10 via-blue-300/20 to-transparent blur-[140px] pointer-events-none rounded-full" />
       <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-blue-500/5 blur-[120px] pointer-events-none rounded-full" />
 
       {/* Grid Pattern Overlay */}
@@ -114,7 +114,7 @@ export default function ContactUs() {
             className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900"
           >
             How can we <br />
-            <span className="bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 bg-clip-text text-transparent">
               help you today?
             </span>
           </motion.h1>

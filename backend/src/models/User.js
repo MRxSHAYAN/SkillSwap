@@ -94,7 +94,7 @@ const userSchema = new mongoose.Schema(
     },
     credits: {
       type: Number,
-      default: 100,
+      default: 50,
     },
     // Password reset fields
     resetOtp: {
