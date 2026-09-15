@@ -67,10 +67,12 @@ export default function App() {
           <Route path="room" element={<LiveRoom />} />
           <Route path="swaps" element={<MySwaps />} />
           <Route path="my-swaps" element={<MySwaps />} />
+          <Route path="sessions" element={<MySwaps />} />
           <Route path="matches" element={<Matches />} />
           <Route path="messages" element={<Messages />} />
           <Route path="credits" element={<Credits />} />
           <Route path="leaderboard" element={<SSPleaderboard />} />
+          <Route path="swap-details/:id" element={<SwapDetails />} />
           <Route path="swap-details" element={<SwapDetails />} />
         </Route>
         </Route>

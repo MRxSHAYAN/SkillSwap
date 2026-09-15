@@ -1,5 +1,6 @@
 const Swap = require('../models/Swap');
 const ReviewModel = require('../models/Review');
+const User = require('../models/User');
 
 /**
  * @desc    Get aggregated dashboard overview data for the logged-in user
@@ -11,20 +12,20 @@ const getDashboardOverview = async (req, res) => {
     const userId = req.user._id;
 
     // ─── Fetch all swaps involving this user ───────────────────────────────
-    const [allSwaps, reviews] = await Promise.all([
+    const [allSwaps, reviews, currentUser] = await Promise.all([
       Swap.find({
         $or: [{ creator: userId }, { partner: userId }],
       })
         .populate('creator', 'fullName avatarUrl skillsTeach')
         .populate('partner', 'fullName avatarUrl skillsTeach')
         .sort({ createdAt: -1 }),
-
       ReviewModel.find({ reviewer: userId }).sort({ createdAt: -1 }),
+      User.findById(userId).select('credits'),
     ]);
 
     // ─── Compute Stats ──────────────────────────────────────────────────────
     const completedSwaps = allSwaps.filter((s) => s.status === 'completed');
-    const acceptedSwaps  = allSwaps.filter((s) => s.status === 'accepted' || s.status === 'matched');
+    const acceptedSwaps  = allSwaps.filter((s) => ['accepted', 'matched', 'awaiting_completion'].includes(s.status));
 
     const swapsCompleted     = completedSwaps.length;
     const activeMatchesCount = acceptedSwaps.length;
@@ -49,7 +50,7 @@ const getDashboardOverview = async (req, res) => {
       averageRating = Number((sum / reviews.length).toFixed(1));
     }
 
-    const totalCredits = 50 + swapsCompleted * 50;
+    const totalCredits = user.credits ?? 50;
 
     const stats = {
       totalCredits,

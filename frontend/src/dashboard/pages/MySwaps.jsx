@@ -59,17 +59,19 @@ function Avatar({ user, size = "md" }) {
 
 function StatusBadge({ status }) {
   const map = {
-    pending:   "bg-amber-50 text-amber-700 border-amber-200",
-    open:      "bg-slate-100 text-slate-600 border-slate-200",
-    accepted:  "bg-emerald-50 text-emerald-700 border-emerald-200",
-    matched:   "bg-emerald-50 text-emerald-700 border-emerald-200",
-    rejected:  "bg-rose-50 text-rose-600 border-rose-200",
-    completed: "bg-blue-50 text-blue-700 border-blue-200",
-    cancelled: "bg-slate-100 text-slate-500 border-slate-200",
+    pending:              "bg-amber-50 text-amber-700 border-amber-200",
+    open:                 "bg-slate-100 text-slate-600 border-slate-200",
+    accepted:             "bg-emerald-50 text-emerald-700 border-emerald-200",
+    matched:              "bg-emerald-50 text-emerald-700 border-emerald-200",
+    rejected:             "bg-rose-50 text-rose-600 border-rose-200",
+    completed:            "bg-blue-50 text-blue-700 border-blue-200",
+    cancelled:            "bg-slate-100 text-slate-500 border-slate-200",
+    awaiting_completion:  "bg-amber-50 text-amber-700 border-amber-200",
   };
   const label = {
-    accepted: "CONFIRMED",
-    matched:  "CONFIRMED",
+    accepted:            "CONFIRMED",
+    matched:             "CONFIRMED",
+    awaiting_completion: "AWAITING BOTH",
   }[status] || status?.toUpperCase();
 
   return (
@@ -199,7 +201,7 @@ export default function MySwaps() {
   const handleComplete = async (swapId) => {
     if (
       !window.confirm(
-        "Mark this swap as completed? Both partners will be notified and can submit reviews."
+        "Confirm this swap is complete on your end? Credits will settle once your partner also confirms."
       )
     )
       return;
@@ -209,11 +211,22 @@ export default function MySwaps() {
       const json = await apiFetch(`/api/swaps/${swapId}/complete`, {
         method: "PATCH",
       });
-      showToast("Swap completed! Credits earned. You can now submit a review.", "success");
+
+      if (json.status === "awaiting_completion") {
+        showToast(
+          "✓ Your confirmation saved. Waiting for your partner to confirm.",
+          "info"
+        );
+      } else {
+        showToast(
+          "🎉 Both parties confirmed! Swap completed — credits have been settled.",
+          "success"
+        );
+      }
       fetchAll();
     } catch (err) {
       console.error("API Error:", err);
-      setError("Unable to complete swap session. Please try again later.");
+      setError(err.message || "Unable to confirm swap completion. Please try again.");
     } finally {
       setActionLoadingId(null);
     }
@@ -434,19 +447,60 @@ export default function MySwaps() {
                         <span>Enter Session Room</span>
                       </Link>
 
-                      {/* Complete Swap */}
-                      <button
-                        onClick={() => handleComplete(swap._id)}
-                        disabled={actionLoadingId === swap._id}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50 ml-auto"
-                      >
-                        {actionLoadingId === swap._id ? (
-                          <Loader2 size={13} className="animate-spin" />
-                        ) : (
-                          <Trophy size={13} />
-                        )}
-                        <span>Complete Swap</span>
-                      </button>
+                      {/* Complete Swap — smart state */}
+                      {(() => {
+                        const currentUserId =
+                          JSON.parse(localStorage.getItem("user") || "{}").id ||
+                          JSON.parse(localStorage.getItem("user") || "{}")._id;
+                        const iHaveConfirmed = (swap.completedBy || []).some(
+                          (id) => id?.toString() === currentUserId?.toString()
+                        );
+                        const isAwaiting = swap.status === "awaiting_completion";
+
+                        if (iHaveConfirmed) {
+                          // This user already confirmed — show waiting state
+                          return (
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold ml-auto">
+                              <Loader2 size={13} className="animate-spin" />
+                              <span>Waiting for partner…</span>
+                            </div>
+                          );
+                        }
+
+                        if (isAwaiting && !iHaveConfirmed) {
+                          // Partner already confirmed — prompt this user to confirm
+                          return (
+                            <button
+                              onClick={() => handleComplete(swap._id)}
+                              disabled={actionLoadingId === swap._id}
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50 ml-auto animate-pulse"
+                            >
+                              {actionLoadingId === swap._id ? (
+                                <Loader2 size={13} className="animate-spin" />
+                              ) : (
+                                <CheckCircle2 size={13} />
+                              )}
+                              <span>Partner confirmed — confirm your side!</span>
+                            </button>
+                          );
+                        }
+
+                        // Neither confirmed yet
+                        return (
+                          <button
+                            onClick={() => handleComplete(swap._id)}
+                            disabled={actionLoadingId === swap._id}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50 ml-auto"
+                          >
+                            {actionLoadingId === swap._id ? (
+                              <Loader2 size={13} className="animate-spin" />
+                            ) : (
+                              <Trophy size={13} />
+                            )}
+                            <span>Mark Complete</span>
+                          </button>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>

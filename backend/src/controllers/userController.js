@@ -10,7 +10,7 @@ const getMe = async (req, res) => {
     // req.user is set by the protect middleware — always the authenticated user.
     // We re-fetch to guarantee fresh data and control exactly which fields are returned.
     const user = await User.findById(req.user._id).select(
-      'fullName username email bio timezone avatarUrl country languages skillsTeach notificationPrefs swapPrefs role createdAt'
+      'fullName username email bio timezone avatarUrl country languages skillsTeach notificationPrefs swapPrefs role credits createdAt'
     );
 
     if (!user) {
@@ -104,7 +104,7 @@ const updateMe = async (req, res) => {
         runValidators: true,  // run schema validations on the new values
       }
     ).select(
-      'fullName username email bio timezone avatarUrl country languages skillsTeach notificationPrefs swapPrefs role createdAt'
+      'fullName username email bio timezone avatarUrl country languages skillsTeach notificationPrefs swapPrefs role credits createdAt'
     );
 
     if (!updatedUser) {

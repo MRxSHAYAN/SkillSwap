@@ -75,6 +75,7 @@ const register = async (req, res) => {
         languages: user.languages,
         skillsTeach: user.skillsTeach,
         role: user.role,
+        credits: user.credits,
         createdAt: user.createdAt,
       },
     });
@@ -153,6 +154,7 @@ const login = async (req, res) => {
         languages: user.languages,
         skillsTeach: user.skillsTeach,
         role: user.role,
+        credits: user.credits,
         createdAt: user.createdAt,
       },
     });

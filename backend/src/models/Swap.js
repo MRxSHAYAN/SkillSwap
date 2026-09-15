@@ -71,8 +71,15 @@ const swapSchema = new mongoose.Schema(
     // Lifecycle status
     status: {
       type: String,
-      enum: ['open', 'pending', 'accepted', 'rejected', 'matched', 'completed', 'cancelled'],
+      enum: ['open', 'pending', 'accepted', 'rejected', 'matched', 'completed', 'cancelled', 'awaiting_completion'],
       default: 'open',
+    },
+
+    // Tracks which participants have confirmed completion (both must confirm)
+    completedBy: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
     },
 
     // Scheduled date/time for the next session (set when matched)

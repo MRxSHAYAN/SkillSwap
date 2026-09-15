@@ -113,4 +113,57 @@ const getExploreSkills = async (req, res) => {
   }
 };
 
-module.exports = { getExploreSkills };
+// module.exports moved to bottom of file after getPublicSkills
+
+/**
+ * @desc    Public skill listings — no auth required (used by public ExploreSkills page)
+ * @route   GET /api/skills/public
+ * @access  Public
+ */
+const getPublicSkills = async (req, res) => {
+  try {
+    const openSwaps = await Swap.find({ status: 'open' })
+      .populate('creator', 'fullName avatarUrl country skillsTeach bio')
+      .sort({ createdAt: -1 })
+      .limit(30);
+
+    const reviews = await ReviewModel.find().select('reviewer rating');
+
+    const getRatingStats = (userIdStr) => {
+      const userReviews = reviews.filter(
+        (r) => r.reviewer && r.reviewer.toString() === userIdStr
+      );
+      if (userReviews.length === 0) return { rating: 5.0, reviewCount: 0 };
+      const sum = userReviews.reduce((acc, r) => acc + r.rating, 0);
+      return { rating: Number((sum / userReviews.length).toFixed(1)), reviewCount: userReviews.length };
+    };
+
+    const listings = openSwaps.map((swap) => {
+      const creator = swap.creator;
+      const stats = creator ? getRatingStats(creator._id.toString()) : { rating: 5.0, reviewCount: 0 };
+      return {
+        id: swap._id,
+        swapId: swap._id,
+        mentorId: creator?._id || null,
+        name: creator?.fullName || 'Community Member',
+        role: creator?.skillsTeach?.[0] ? `${creator.skillsTeach[0]} Mentor` : 'Skill Mentor',
+        avatarUrl: creator?.avatarUrl || null,
+        country: creator?.country || '',
+        rating: stats.rating,
+        reviewsCount: stats.reviewCount,
+        category: swap.category || 'Other',
+        offering: [swap.offeredSkill],
+        seeking: [swap.wantedSkill],
+        description: swap.description || '',
+        skillLevel: swap.skillLevel || 'Intermediate',
+      };
+    });
+
+    return res.status(200).json({ success: true, count: listings.length, data: listings });
+  } catch (error) {
+    console.error('getPublicSkills error:', error);
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { getExploreSkills, getPublicSkills };

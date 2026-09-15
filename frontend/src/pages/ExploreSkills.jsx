@@ -1,33 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search,
-  GraduationCap,
-  Filter,
-  Star,
-  Code2,
-  Palette,
-  Video,
-  LineChart,
-  Boxes,
-  Cpu,
-  CheckCircle2,
-  ArrowRight,
-  Music,
-  Camera,
-  Dumbbell,
-  PenTool,
-  Brush,
-  UserRound,
-  ShieldCheck,
-  ChevronDown,
+  Search, GraduationCap, Filter, Star, Code2, Palette, Video,
+  LineChart, Boxes, Cpu, CheckCircle2, ArrowRight, Music, Camera,
+  Dumbbell, PenTool, Brush, UserRound, ShieldCheck, ChevronDown, Loader2, User,
 } from "lucide-react";
+
+const STATIC_CARDS = [
+  { id: "s1", name: "Alex Chen", role: "Frontend Engineer", avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200", rating: "4.9", reviewsCount: 24, skillLevel: "Advanced", category: "Development", offering: ["React, Tailwind, State Management"], seeking: ["Figma UI/UX Design"], title: "React & Next.js Frontend Dev" },
+  { id: "s2", name: "Sarah Jenkins", role: "Product Designer", avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200", rating: "5.0", reviewsCount: 38, skillLevel: "Expert", category: "Design", offering: ["Figma, UI Kit, Wireframing"], seeking: ["Node.js & Express Backend"], title: "Figma Design System & Prototyping" },
+  { id: "s3", name: "Marcus Vance", role: "Content Creator", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200", rating: "4.8", reviewsCount: 19, skillLevel: "Intermediate", category: "Video & Motion", offering: ["Premiere Pro, CapCut, Color Grading"], seeking: ["SEO & Growth Strategy"], title: "Short-form Video Editing & FX" },
+  { id: "s4", name: "Elena Rostova", role: "Growth Marketer", avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200", rating: "4.9", reviewsCount: 31, skillLevel: "Advanced", category: "Marketing", offering: ["Technical SEO, Keyword Research"], seeking: ["Python for Data Analysis"], title: "SEO & Content Marketing Growth" },
+  { id: "s5", name: "David Kim", role: "3D Artist", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200", rating: "5.0", reviewsCount: 15, skillLevel: "Advanced", category: "3D & FX", offering: ["Blender, Texturing, Lighting"], seeking: ["React Native Mobile Dev"], title: "Blender 3D Asset Modeling" },
+  { id: "s6", name: "Priya Sharma", role: "AI Researcher", avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200", rating: "4.9", reviewsCount: 42, skillLevel: "Expert", category: "AI & Data", offering: ["LLM Fine-tuning, Prompt Design"], seeking: ["3D Character Animation"], title: "AI Prompt Engineering & PyTorch" },
+];
 
 export default function ExploreSkills() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showAll, setShowAll] = useState(false); // Controls 3-row limit
+  const [showAll, setShowAll] = useState(false);
+  const [apiCards, setApiCards] = useState([]);
+  const [apiLoading, setApiLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/skills/public")
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setApiCards(data.data || []); })
+      .catch(() => {})
+      .finally(() => setApiLoading(false));
+  }, []);
+
+  // Merge: real API cards first, then static as padding
+  const allCards = apiCards.length > 0
+    ? [
+        ...apiCards.map((item) => ({
+          id: item.id,
+          name: item.name,
+          role: item.role,
+          avatarUrl: item.avatarUrl,
+          rating: String(item.rating),
+          reviewsCount: item.reviewsCount,
+          skillLevel: item.skillLevel,
+          category: item.category,
+          offering: Array.isArray(item.offering) ? item.offering.join(", ") : item.offering,
+          seeking: Array.isArray(item.seeking) ? item.seeking.join(", ") : item.seeking,
+          title: `${Array.isArray(item.offering) ? item.offering[0] : item.offering} ↔ ${Array.isArray(item.seeking) ? item.seeking[0] : item.seeking}`,
+          isReal: true,
+        })),
+        ...STATIC_CARDS.map((s) => ({ ...s, offering: s.offering[0], seeking: s.seeking[0] })),
+      ]
+    : STATIC_CARDS.map((s) => ({ ...s, offering: s.offering[0], seeking: s.seeking[0] }));
 
   const categories = [
     { name: "All", icon: GraduationCap },

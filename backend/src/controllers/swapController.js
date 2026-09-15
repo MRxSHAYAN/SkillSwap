@@ -173,13 +173,14 @@ const getMyRequests = async (req, res) => {
         .populate('partner', 'fullName avatarUrl skillsTeach email country')
         .sort({ createdAt: -1 }),
 
-      // Active: All swaps where user is creator OR partner with status accepted/matched
+      // Active: All swaps where user is creator OR partner with status accepted/matched/awaiting_completion
       Swap.find({
         $or: [{ creator: userId }, { partner: userId }],
-        status: { $in: ['accepted', 'matched'] },
+        status: { $in: ['accepted', 'matched', 'awaiting_completion'] },
       })
         .populate('creator', 'fullName avatarUrl skillsTeach email country')
         .populate('partner', 'fullName avatarUrl skillsTeach email country')
+        .select('+completedBy')
         .sort({ nextSession: 1, createdAt: -1 }),
     ]);
 
@@ -277,9 +278,15 @@ const updateSwapStatus = async (req, res) => {
 };
 
 /**
- * @desc    Mark a swap as completed (triggers credits & review eligibility)
+ * @desc    Confirm swap completion (both parties must confirm before credits settle)
  * @route   PATCH /api/swaps/:id/complete
- * @access  Private (creator or partner)
+ * @access  Private (creator or partner only)
+ *
+ * Flow:
+ *  1. First party calls → added to completedBy, status → 'awaiting_completion',
+ *     other party gets a notification.
+ *  2. Second party calls → both confirmed, status → 'completed',
+ *     credits settle (+50 teacher / -50 student).
  */
 const completeSwap = async (req, res) => {
   try {
@@ -287,85 +294,130 @@ const completeSwap = async (req, res) => {
     const userId = req.user._id;
 
     const swap = await Swap.findById(swapId);
-
     if (!swap) {
       return res.status(404).json({ success: false, message: 'Swap not found' });
     }
 
-    // Only creator or partner can mark it complete
-    const isParticipant =
-      swap.creator.toString() === userId.toString() ||
-      (swap.partner && swap.partner.toString() === userId.toString());
-
-    if (!isParticipant) {
+    // ── Guard: only participants ───────────────────────────────────────────
+    const isCreator = swap.creator.toString() === userId.toString();
+    const isPartner = swap.partner && swap.partner.toString() === userId.toString();
+    if (!isCreator && !isPartner) {
       return res.status(403).json({ success: false, message: 'Access denied' });
     }
 
-    if (swap.status !== 'accepted' && swap.status !== 'matched') {
+    // ── Guard: must be active or already awaiting_completion ──────────────
+    const activeStatuses = ['accepted', 'matched', 'awaiting_completion'];
+    if (!activeStatuses.includes(swap.status)) {
       return res.status(400).json({
         success: false,
-        message: 'Only active (accepted) swaps can be marked as completed',
+        message: 'Only active swaps can be marked as completed',
       });
     }
 
-    swap.status = 'completed';
-    await swap.save();
-    await swap.populate('creator', 'fullName avatarUrl skillsTeach email');
-    await swap.populate('partner', 'fullName avatarUrl skillsTeach email');
-
-    // Credit settlement: Teacher (creator) earns +50 credits, Student (partner) spends -50 credits
-    const creatorName = swap.creator?.fullName || 'Teacher';
-    const partnerName = swap.partner?.fullName || 'Student';
-
-    if (swap.creator?._id) {
-      await User.findByIdAndUpdate(swap.creator._id, { $inc: { credits: 50 } });
-      await CreditTransaction.create({
-        userId: swap.creator._id,
-        type: 'EARNED',
-        amount: 50,
-        description: `Taught ${swap.offeredSkill || 'skill'}`,
-        partnerName: partnerName,
+    // ── Guard: user already confirmed ────────────────────────────────────
+    const alreadyConfirmed = swap.completedBy.some(
+      (id) => id.toString() === userId.toString()
+    );
+    if (alreadyConfirmed) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already confirmed completion. Waiting for your partner.',
       });
     }
 
-    if (swap.partner?._id) {
-      await User.findByIdAndUpdate(swap.partner._id, { $inc: { credits: -50 } });
-      await CreditTransaction.create({
-        userId: swap.partner._id,
-        type: 'SPENT',
-        amount: 50,
-        description: `Learned ${swap.wantedSkill || swap.offeredSkill || 'skill'}`,
-        partnerName: creatorName,
-      });
-    }
+    // ── Add this user's confirmation ──────────────────────────────────────
+    swap.completedBy.push(userId);
 
-    // Notify both participants
-    const actorName = req.user.fullName || 'A member';
-    const otherId = swap.creator._id.toString() === userId.toString()
-      ? swap.partner?._id
-      : swap.creator._id;
+    const otherId = isCreator ? swap.partner : swap.creator;
+    const otherConfirmed = swap.completedBy.some(
+      (id) => id.toString() === otherId.toString()
+    );
 
-    if (otherId) {
+    // ── CASE 1: Both confirmed → settle credits ───────────────────────────
+    if (otherConfirmed) {
+      swap.status = 'completed';
+      await swap.save();
+      await swap.populate('creator', 'fullName avatarUrl skillsTeach email');
+      await swap.populate('partner', 'fullName avatarUrl skillsTeach email');
+
+      const creatorName = swap.creator?.fullName || 'Teacher';
+      const partnerName = swap.partner?.fullName || 'Student';
+
+      // Teacher (creator) earns +50
+      if (swap.creator?._id) {
+        await User.findByIdAndUpdate(swap.creator._id, { $inc: { credits: 50 } });
+        await CreditTransaction.create({
+          userId:      swap.creator._id,
+          type:        'EARNED',
+          amount:      50,
+          description: `Taught ${swap.offeredSkill || 'skill'}`,
+          partnerName: partnerName,
+        });
+      }
+
+      // Student (partner) spends -50
+      if (swap.partner?._id) {
+        await User.findByIdAndUpdate(swap.partner._id, { $inc: { credits: -50 } });
+        await CreditTransaction.create({
+          userId:      swap.partner._id,
+          type:        'SPENT',
+          amount:      50,
+          description: `Learned ${swap.wantedSkill || swap.offeredSkill || 'skill'}`,
+          partnerName: creatorName,
+        });
+      }
+
+      // Notify both
+      const actorName = req.user.fullName || 'A member';
       createNotificationAsync({
         recipient: otherId,
         sender:    userId,
         type:      'SWAP_ACCEPTED',
-        message:   `${actorName} marked your skill swap as completed. You can now submit a review!`,
+        message:   `${actorName} confirmed completion. Your swap is done! Credits have been settled.`,
         link:      '/dashboard/my-swaps',
+      });
+      createNotificationAsync({
+        recipient: userId,
+        sender:    otherId,
+        type:      'SWAP_ACCEPTED',
+        message:   `Swap with ${req.user.fullName === creatorName ? partnerName : creatorName} is fully completed. Credits settled!`,
+        link:      '/dashboard/my-swaps',
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Both parties confirmed. Swap completed and credits settled!',
+        status:  'completed',
+        data:    swap,
       });
     }
 
+    // ── CASE 2: First confirmation — waiting for partner ──────────────────
+    swap.status = 'awaiting_completion';
+    await swap.save();
+
+    const actorName = req.user.fullName || 'A member';
+    createNotificationAsync({
+      recipient: otherId,
+      sender:    userId,
+      type:      'SWAP_ACCEPTED',
+      message:   `${actorName} marked the swap as complete. Please confirm on your end to settle credits.`,
+      link:      '/dashboard/my-swaps',
+    });
+
     return res.status(200).json({
       success: true,
-      message: 'Swap marked as completed. Credits and review eligibility activated!',
-      data: swap,
+      message: 'Your completion confirmed. Waiting for your partner to confirm.',
+      status:  'awaiting_completion',
+      data:    swap,
     });
+
   } catch (error) {
     console.error('completeSwap error:', error);
     return res.status(500).json({
       success: false,
       message: 'Server error while completing swap',
-      error: error.message,
+      error:   error.message,
     });
   }
 };
