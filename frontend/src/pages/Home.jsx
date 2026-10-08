@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-
   const stats = [
     {
       icon: Users,
@@ -135,9 +134,9 @@ export default function Home() {
   };
 
   return (
-    <>
+    <main className="relative z-20">
       {/* HERO SECTION */}
-      <section className="relative min-h-[100dvh] pb-12 lg:pb-16 flex items-center justify-center bg-black text-white overflow-hidden">
+      <section className="relative min-h-[100vh] sm:min-h-[100vh] md:min-h-[600px] pb-12 lg:pb-16 flex items-center justify-center bg-black text-white overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-10 right-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-purple-600/15 blur-[140px] rounded-full pointer-events-none" />
 
@@ -228,7 +227,9 @@ export default function Home() {
               <div className="rounded-2xl bg-zinc-900 border border-white/10 overflow-hidden shadow-2xl">
                 {/* Card header */}
                 <div className="px-5 py-4 border-b border-white/8 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-white">Active Swap</span>
+                  <span className="text-sm font-semibold text-white">
+                    Active Swap
+                  </span>
                   <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     Live
@@ -244,22 +245,35 @@ export default function Home() {
                         E
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white leading-tight">Elena R.</p>
+                        <p className="text-sm font-semibold text-white leading-tight">
+                          Elena R.
+                        </p>
                         <p className="text-[11px] text-zinc-500">Berlin, DE</p>
                       </div>
                     </div>
                     <div>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Teaching</p>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">
+                        Teaching
+                      </p>
                       <div className="flex items-center gap-1.5">
                         <Code2 size={13} className="text-blue-400 shrink-0" />
-                        <span className="text-xs font-medium text-zinc-200">React & Next.js</span>
+                        <span className="text-xs font-medium text-zinc-200">
+                          React & Next.js
+                        </span>
                       </div>
                     </div>
                     <div>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Learning</p>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">
+                        Learning
+                      </p>
                       <div className="flex items-center gap-1.5">
-                        <Palette size={13} className="text-purple-400 shrink-0" />
-                        <span className="text-xs font-medium text-zinc-200">Figma UI/UX</span>
+                        <Palette
+                          size={13}
+                          className="text-purple-400 shrink-0"
+                        />
+                        <span className="text-xs font-medium text-zinc-200">
+                          Figma UI/UX
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -271,22 +285,35 @@ export default function Home() {
                         M
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white leading-tight">Marcus K.</p>
+                        <p className="text-sm font-semibold text-white leading-tight">
+                          Marcus K.
+                        </p>
                         <p className="text-[11px] text-zinc-500">Lagos, NG</p>
                       </div>
                     </div>
                     <div>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Teaching</p>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">
+                        Teaching
+                      </p>
                       <div className="flex items-center gap-1.5">
-                        <Palette size={13} className="text-purple-400 shrink-0" />
-                        <span className="text-xs font-medium text-zinc-200">Figma UI/UX</span>
+                        <Palette
+                          size={13}
+                          className="text-purple-400 shrink-0"
+                        />
+                        <span className="text-xs font-medium text-zinc-200">
+                          Figma UI/UX
+                        </span>
                       </div>
                     </div>
                     <div>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">Learning</p>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide mb-1">
+                        Learning
+                      </p>
                       <div className="flex items-center gap-1.5">
                         <Code2 size={13} className="text-blue-400 shrink-0" />
-                        <span className="text-xs font-medium text-zinc-200">React & Next.js</span>
+                        <span className="text-xs font-medium text-zinc-200">
+                          React & Next.js
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -303,7 +330,11 @@ export default function Home() {
                       className="h-full rounded-full bg-blue-500"
                       initial={{ width: 0 }}
                       animate={{ width: "75%" }}
-                      transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                      transition={{
+                        duration: 1.2,
+                        delay: 0.5,
+                        ease: "easeOut",
+                      }}
                     />
                   </div>
                 </div>
@@ -313,11 +344,27 @@ export default function Home() {
 
                 {/* Pending requests */}
                 <div className="px-5 py-4">
-                  <p className="text-xs text-zinc-500 uppercase tracking-wide mb-3">People looking to swap</p>
+                  <p className="text-xs text-zinc-500 uppercase tracking-wide mb-3">
+                    People looking to swap
+                  </p>
                   <div className="space-y-2">
                     {[
-                      { name: "Aisha T.", offers: "Python", wants: "Video Editing", avatar: "A", color: "text-amber-400 bg-amber-500/20 border-amber-500/30" },
-                      { name: "Luca B.", offers: "3D Blender", wants: "SEO & Growth", avatar: "L", color: "text-emerald-400 bg-emerald-500/20 border-emerald-500/30" },
+                      {
+                        name: "Aisha T.",
+                        offers: "Python",
+                        wants: "Video Editing",
+                        avatar: "A",
+                        color:
+                          "text-amber-400 bg-amber-500/20 border-amber-500/30",
+                      },
+                      {
+                        name: "Luca B.",
+                        offers: "3D Blender",
+                        wants: "SEO & Growth",
+                        avatar: "L",
+                        color:
+                          "text-emerald-400 bg-emerald-500/20 border-emerald-500/30",
+                      },
                     ].map((p, i) => (
                       <motion.div
                         key={i}
@@ -327,12 +374,18 @@ export default function Home() {
                         className="flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className={`w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 ${p.color}`}>
+                          <div
+                            className={`w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 ${p.color}`}
+                          >
                             {p.avatar}
                           </div>
                           <div>
-                            <p className="text-xs font-medium text-zinc-200">{p.name}</p>
-                            <p className="text-[11px] text-zinc-500">{p.offers} ↔ {p.wants}</p>
+                            <p className="text-xs font-medium text-zinc-200">
+                              {p.name}
+                            </p>
+                            <p className="text-[11px] text-zinc-500">
+                              {p.offers} ↔ {p.wants}
+                            </p>
                           </div>
                         </div>
                         <Link
@@ -348,9 +401,12 @@ export default function Home() {
 
                 {/* Bottom strip */}
                 <div className="border-t border-white/8 px-5 py-3 flex items-center justify-between">
-                  <span className="text-xs text-zinc-500">No money exchanged — ever.</span>
+                  <span className="text-xs text-zinc-500">
+                    No money exchanged — ever.
+                  </span>
                   <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1">
-                    <CheckCircle2 size={12} className="text-emerald-400" /> Free to join
+                    <CheckCircle2 size={12} className="text-emerald-400" /> Free
+                    to join
                   </span>
                 </div>
               </div>
@@ -613,6 +669,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-    </>
+    </main>
   );
 }

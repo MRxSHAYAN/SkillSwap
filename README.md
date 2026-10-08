@@ -208,3 +208,64 @@ EMAIL_PASS=your_app_password
 | `GET` | `/api/leaderboard` | Fetch mentor leaderboard (`?timeframe=weekly\|monthly\|all time`) | Yes |
 | `GET` | `/api/credits` | Fetch user credit balance & transaction history | Yes |
 | `GET` | `/api/notifications` | Fetch system notifications | Yes |
+
+---
+
+## Footer Reveal
+
+SkillSwap features a modern, editorial reveal-footer effect (curtain unmasking) similar to high-end portfolio and digital agency websites.
+
+### What the effect does
+- **Layered Stacking**: Rather than appearing as a standard block after the final page section, the footer sits anchored underneath the website content.
+- **Hidden While Browsing**: As the user scrolls through page content, the front layer's solid background covers the footer completely.
+- **Smooth Curtain Reveal**: As the user reaches the bottom of the page, the front layer moves away upward, smoothly unmasking the footer underneath.
+- **Full Interactivity**: When fully revealed, the footer rests naturally at the bottom of the viewport with all links, social icons, and the back-to-top button completely interactive.
+
+### Where the implementation lives
+The architecture is centrally contained inside [PublicLayout.jsx](file:///c:/Drive/WorkSpace/Development/Projects/mern%20stack%20projects/SkillSwap/frontend/src/layouts/PublicLayout.jsx), leaving the visual presentation and internal elements of [Footer.jsx](file:///c:/Drive/WorkSpace/Development/Projects/mern%20stack%20projects/SkillSwap/frontend/src/components/Footer.jsx) completely intact.
+
+### Technologies used
+A synergy of **Tailwind CSS + Framer Motion + React**:
+- **Tailwind CSS**: Manages the positioning (`fixed bottom-0`, `relative`), stacking order (`z-10` vs `z-0`), shadows (`shadow-2xl`), and flex layout.
+- **React (`ResizeObserver`)**: Dynamically measures the footer's true rendered height across all viewports (desktop multi-column vs mobile stacked columns) to size the reveal spacer with zero hardcoded pixel heights.
+- **Framer Motion (`useScroll` & `useTransform`)**: Drives scroll-linked transitions (`y` parallax, `opacity`, and `scale`) as the user navigates through the reveal zone.
+
+### Stacking & Layering Structure
+```
+Page Wrapper (relative min-h-screen bg-black)
+│
+├── Main Content Layer (relative z-10 bg-white min-h-screen shadow-2xl)
+│   ├── <Navbar /> (fixed top-0, z-50)
+│   └── <Outlet /> (Public pages: Home, About, ExploreSkills, etc.)
+│
+├── Reveal Spacer (relative w-full pointer-events-none, height = dynamic footerHeight)
+│
+└── Footer Layer (fixed bottom-0 left-0 w-full z-0, Framer Motion underlay)
+    └── <Footer />
+```
+
+### How the scroll/reveal animation works
+1. The transparent Reveal Spacer sits at the end of the page flow, creating a scroll canvas matching `footerHeight`.
+2. Framer Motion tracks scroll progress across this spacer using `useScroll({ target: revealTriggerRef, offset: ["start end", "end end"] })`.
+3. As `scrollYProgress` moves from `0` to `1`:
+   - `y`: Transitions from `-40px` to `0px` (gentle parallax emergence).
+   - `opacity`: Transitions from `0.6` to `1.0` (fades in from submerged depth).
+   - `scale`: Transitions from `0.98` to `1.0` (smooth scale expansion).
+
+### How to disable or modify the effect
+To revert to a standard, static in-flow footer at any time, open [PublicLayout.jsx](file:///c:/Drive/WorkSpace/Development/Projects/mern%20stack%20projects/SkillSwap/frontend/src/layouts/PublicLayout.jsx) and replace its return statement with standard document flow:
+
+```jsx
+export default function PublicLayout() {
+  return (
+    <div className="min-h-screen flex flex-col justify-between bg-white text-black">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
