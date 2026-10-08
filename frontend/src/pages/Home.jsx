@@ -136,7 +136,7 @@ export default function Home() {
   return (
     <main className="relative z-20">
       {/* HERO SECTION */}
-      <section className="relative min-h-[100vh] sm:min-h-[100vh] md:min-h-[600px] pb-12 lg:pb-16 flex items-center justify-center bg-black text-white overflow-hidden">
+      <section className="relative min-h-[100vh] sm:min-h-[100vh] md:min-h-[85vh] pb-12 lg:pb-16 flex items-center justify-center bg-black text-white overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-10 right-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-purple-600/15 blur-[140px] rounded-full pointer-events-none" />
 
